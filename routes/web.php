@@ -18,13 +18,11 @@ use App\Livewire\Checkout;
 
 use App\Livewire\FlexCard;
 
-// Multi-Step Installer
+// Laravel-Based Installer
 Route::get('/install', [App\Http\Controllers\InstallerController::class, 'index'])->name('installer');
 Route::get('/install/check-requirements', [App\Http\Controllers\InstallerController::class, 'checkRequirements']);
 Route::post('/install/test-database', [App\Http\Controllers\InstallerController::class, 'testDatabase']);
-Route::post('/install/clean-database', [App\Http\Controllers\InstallerController::class, 'cleanDatabase']);
-Route::post('/install/run-migrations', [App\Http\Controllers\InstallerController::class, 'runMigrations']);
-Route::post('/install/seed-database', [App\Http\Controllers\InstallerController::class, 'seedDatabase']);
+Route::post('/install/run', [App\Http\Controllers\InstallerController::class, 'install']);
 Route::post('/install/create-admin', [App\Http\Controllers\InstallerController::class, 'createAdmin']);
 
 use App\Livewire\Wardrobe\Index as WardrobeIndex;
