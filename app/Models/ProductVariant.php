@@ -9,15 +9,19 @@ class ProductVariant extends Model
     protected $fillable = [
         'product_id',
         'sku',
-        'size',
-        'color',
+        'price',
+        'compare_price',
         'stock_quantity',
-        'price_modifier',
         'image_url',
+        'options',
         'is_active',
     ];
 
     protected $casts = [
+        'price' => 'decimal:2',
+        'compare_price' => 'decimal:2',
+        'stock_quantity' => 'integer',
+        'options' => 'array',
         'is_active' => 'boolean',
     ];
 
@@ -26,16 +30,27 @@ class ProductVariant extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function getFinalPrice()
+    public function scopeActive($query)
     {
-        return $this->product->price + $this->price_modifier;
+        return $query->where('is_active', true);
     }
 
-    public function getDisplayName()
+    public function scopeInStock($query)
     {
-        $parts = [];
-        if ($this->size) $parts[] = $this->size;
-        if ($this->color) $parts[] = $this->color;
-        return implode(' - ', $parts);
+        return $query->where('stock_quantity', '>', 0);
+    }
+
+    public function getOptionLabel()
+    {
+        $labels = [];
+        foreach ($this->options as $key => $value) {
+            $labels[] = ucfirst($key) . ': ' . $value;
+        }
+        return implode(', ', $labels);
+    }
+
+    public function getFinalPrice()
+    {
+        return $this->price ?? $this->product->price;
     }
 }

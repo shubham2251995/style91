@@ -7,46 +7,48 @@ use Illuminate\Database\Eloquent\Model;
 class Review extends Model
 {
     protected $fillable = [
-        'user_id',
         'product_id',
-        'order_id',
+        'user_id',
         'rating',
-        'comment',
-        'verified_purchase',
+        'review_text',
+        'images',
+        'is_verified',
         'is_approved',
+        'helpful_count',
+        'not_helpful_count',
     ];
 
     protected $casts = [
-        'verified_purchase' => 'boolean',
+        'images' => 'array',
+        'is_verified' => 'boolean',
         'is_approved' => 'boolean',
+        'rating' => 'integer',
+        'helpful_count' => 'integer',
+        'not_helpful_count' => 'integer',
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function order()
+    public function user()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(User::class);
     }
 
-    public static function getAverageRating($productId)
+    public function scopeApproved($query)
     {
-        return static::where('product_id', $productId)
-            ->where('is_approved', true)
-            ->avg('rating') ?? 0;
+        return $query->where('is_approved', true);
     }
 
-    public static function getReviewCount($productId)
+    public function scopeForProduct($query, $productId)
     {
-        return static::where('product_id', $productId)
-            ->where('is_approved', true)
-            ->count();
+        return $query->where('product_id', $productId);
+    }
+
+    public function scopeByRating($query, $rating)
+    {
+        return $query->where('rating', $rating);
     }
 }

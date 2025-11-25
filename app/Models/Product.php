@@ -67,4 +67,19 @@ class Product extends Model
     {
         return $this->tags()->where('name', $tagName)->exists();
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function averageRating()
+    {
+        return $this->reviews()->approved()->avg('rating') ?? 0;
+    }
+
+    public function reviewsCount()
+    {
+        return $this->reviews()->approved()->count();
+    }
 }

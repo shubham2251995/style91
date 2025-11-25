@@ -1,20 +1,33 @@
 @php
-    $seoService = new \App\Services\SeoService();
-    // Check if we have a product or other model in the view data
-    $model = $product ?? null; 
-    $seoTags = $seoService->generateTags($model);
-    $seoSchema = $seoService->generateSchema($model);
-    $navService = new \App\Services\NavigationService();
-    $headerLinks = $navService->getHeader();
-    $footerColumns = $navService->getFooter();
-    
-    // Site Settings Service
-    $siteSettings = app(\App\Services\SiteSettingsService::class);
-    $siteName = $siteSettings->get('site_name', config('app.name', 'Style91'));
-    $metaTitle = $siteSettings->get('meta_title', $siteName);
-    $metaDescription = $siteSettings->get('meta_description', 'Premium Streetwear Fashion');
-    $metaKeywords = $siteSettings->get('meta_keywords', 'streetwear, fashion');
-    $ogImage = $siteSettings->get('og_image', '/images/og-default.jpg');
+    try {
+        $seoService = new \App\Services\SeoService();
+        // Check if we have a product or other model in the view data
+        $model = $product ?? null; 
+        $seoTags = $seoService->generateTags($model);
+        $seoSchema = $seoService->generateSchema($model);
+        $navService = new \App\Services\NavigationService();
+        $headerLinks = $navService->getHeader();
+        $footerColumns = $navService->getFooter();
+        
+        // Site Settings Service
+        $siteSettings = app(\App\Services\SiteSettingsService::class);
+        $siteName = $siteSettings->get('site_name', config('app.name', 'Style91'));
+        $metaTitle = $siteSettings->get('meta_title', $siteName);
+        $metaDescription = $siteSettings->get('meta_description', 'Premium Streetwear Fashion');
+        $metaKeywords = $siteSettings->get('meta_keywords', 'streetwear, fashion');
+        $ogImage = $siteSettings->get('og_image', '/images/og-default.jpg');
+    } catch (\Exception $e) {
+        // During installation or if database not available
+        $seoTags = '';
+        $seoSchema = '';
+        $headerLinks = [];
+        $footerColumns = [];
+        $siteName = config('app.name', 'Style91');
+        $metaTitle = $siteName;
+        $metaDescription = 'Premium Streetwear Fashion';
+        $metaKeywords = 'streetwear, fashion';
+        $ogImage = '/images/og-default.jpg';
+    }
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">

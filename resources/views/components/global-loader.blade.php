@@ -10,8 +10,13 @@
         <!-- Loader Icon/Animation -->
         <div class="relative inline-block">
             @php
-                $loaderType = \App\Models\SiteSetting::get('loader_type', 'spinner');
-                $loaderColor = \App\Models\SiteSetting::get('loader_color', '#FFE600');
+                try {
+                    $loaderType = \App\Models\SiteSetting::get('loader_type', 'spinner');
+                    $loaderColor = \App\Models\SiteSetting::get('loader_color', '#FFE600');
+                } catch (\Exception $e) {
+                    $loaderType = 'spinner';
+                    $loaderColor = '#FFE600';
+                }
             @endphp
 
             @if($loaderType === 'spinner')
@@ -43,7 +48,11 @@
                 <!-- Default: Logo Loader -->
                 <div class="w-20 h-20 flex items-center justify-center">
                     @php
-                        $logo = \App\Models\SiteSetting::get('logo_url');
+                        try {
+                            $logo = \App\Models\SiteSetting::get('logo_url');
+                        } catch (\Exception $e) {
+                            $logo = null;
+                        }
                     @endphp
                     @if($logo)
                         <img src="{{ $logo }}" alt="Loading" class="max-w-full max-h-full animate-pulse">
@@ -56,10 +65,17 @@
 
         <!-- Loading Text -->
         <p class="mt-4 text-white font-bold text-sm uppercase tracking-widest">
-            {{ \App\Models\SiteSetting::get('loader_text', 'Loading...') }}
+            @php
+                try {
+                    echo \App\Models\SiteSetting::get('loader_text', 'Loading...');
+                } catch (\Exception $e) {
+                    echo 'Loading...';
+                }
+            @endphp
         </p>
     </div>
 </div>
+
 
 <!-- Page Transition Loader -->
 <div 
@@ -78,8 +94,13 @@
 >
     <div class="text-center">
         @php
-            $loaderType = \App\Models\SiteSetting::get('loader_type', 'spinner');
-            $loaderColor = \App\Models\SiteSetting::get('loader_color', '#FFE600');
+            try {
+                $loaderType = \App\Models\SiteSetting::get('loader_type', 'spinner');
+                $loaderColor = \App\Models\SiteSetting::get('loader_color', '#FFE600');
+            } catch (\Exception $e) {
+                $loaderType = 'spinner';
+                $loaderColor = '#FFE600';
+            }
         @endphp
 
         <div class="relative inline-block">
@@ -97,10 +118,17 @@
         </div>
 
         <p class="mt-4 text-white font-bold text-sm uppercase tracking-widest">
-            {{ \App\Models\SiteSetting::get('loader_text', 'Loading...') }}
+            @php
+                try {
+                    echo \App\Models\SiteSetting::get('loader_text', 'Loading...');
+                } catch (\Exception $e) {
+                    echo 'Loading...';
+                }
+            @endphp
         </p>
     </div>
 </div>
+
 
 <script>
     // Trigger page loading events on navigation

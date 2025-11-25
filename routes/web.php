@@ -29,6 +29,9 @@ use App\Livewire\Editorial\Index as EditorialIndex;
 use App\Livewire\Editorial\Show as EditorialShow;
 
 Route::get('/', Home::class)->name('home');
+Route::get('/wishlist', \App\Livewire\WishlistPage::class)->middleware('auth')->name('wishlist');
+Route::get('/checkout/address', \App\Livewire\Checkout\CheckoutAddress::class)->name('checkout.address');
+Route::get('/checkout/payment', \App\Livewire\Checkout\CheckoutPayment::class)->name('checkout.payment');
 Route::get('/search', \App\Livewire\ProductSearch::class)->name('search');
 Route::get('/new-arrivals', \App\Livewire\NewArrivals::class)->name('new-arrivals');
 Route::get('/sale', \App\Livewire\SalePage::class)->name('sale');
@@ -167,9 +170,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/pages', \App\Livewire\Admin\PageManager::class)->name('page-manager');
     Route::get('/orders', \App\Livewire\Admin\OrderManager::class)->name('order-manager');
     Route::get('/coupons', \App\Livewire\Admin\CouponManager::class)->name('coupon-manager');
+    Route::get('/shipping', \App\Livewire\Admin\ShippingManager::class)->name('shipping-manager');
+    Route::get('/payment-gateways', \App\Livewire\Admin\PaymentGatewayManager::class)->name('payment-gateway-manager');
     Route::get('/products', \App\Livewire\Admin\ProductManager::class)->name('product-manager');
     Route::get('/categories', \App\Livewire\Admin\CategoryManager::class)->name('category-manager');
     Route::get('/tags', \App\Livewire\Admin\TagManager::class)->name('tag-manager');
+    Route::get('/reviews', \App\Livewire\Admin\ReviewManager::class)->name('review-manager');
     Route::get('/inventory', \App\Livewire\Admin\InventoryManager::class)->name('inventory-manager');
     Route::get('/customers', \App\Livewire\Admin\CustomerManager::class)->name('customer-manager');
     Route::get('/sections', \App\Livewire\Admin\SectionManager::class)->name('section-manager');

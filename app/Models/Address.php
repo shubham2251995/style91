@@ -11,13 +11,15 @@ class Address extends Model
         'label',
         'full_name',
         'phone',
-        'address_line1',
-        'address_line2',
+        'email',
+        'address_line_1',
+        'address_line_2',
         'city',
         'state',
-        'zip_code',
+        'postcode',
         'country',
         'is_default',
+        'type',
     ];
 
     protected $casts = [
@@ -29,26 +31,28 @@ class Address extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getFullAddressAttribute()
+    public function scopeDefault($query)
     {
-        $parts = [
-            $this->address_line1,
-            $this->address_line2,
-            $this->city,
-            $this->state,
-            $this->zip_code,
-            $this->country,
-        ];
-
-        return implode(', ', array_filter($parts));
+        return $query->where('is_default', true);
     }
 
-    public static function setAsDefault($userId, $addressId)
+    public function scopeShipping($query)
     {
-        // Remove default from all addresses
-        static::where('user_id', $userId)->update(['is_default' => false]);
-        
-        // Set new default
-        static::where('id', $addressId)->update(['is_default' => true]);
+        return $query->whereIn('type', ['shipping', 'both']);
+    }
+
+    public function scopeBilling($query)
+    {
+        return $query->whereIn('type', ['billing', 'both']);
+    }
+
+    public function getFullAddressAttribute()
+    {
+        $address = $this->address_line_1;
+        if ($this->address_line_2) {
+            $address .= ', ' . $this->address_line_2;
+        }
+        $address .= ', ' . $this->city . ', ' . $this->state . ' ' . $this->postcode;
+        return $address;
     }
 }
