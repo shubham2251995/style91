@@ -48,36 +48,18 @@ class InstallerController extends Controller
             DB::purge('mysql');
             DB::connection('mysql')->getPdo();
 
-            // Check if tables already exist
-            $tablesExist = false;
+            // Drop all tables first to ensure clean install
+            $this->dropAllTables();
+
+            // Run migrations
+            Artisan::call('migrate', ['--force' => true]);
+
+            // Try to run seeders (optional)
             try {
-                DB::connection('mysql')->table('users')->limit(1)->count();
-                $tablesExist = true;
+                Artisan::call('db:seed', ['--force' => true]);
             } catch (\Exception $e) {
-                // Tables don't exist, proceed with migration
+                // Seeding is optional, continue anyway
             }
-
-            if ($tablesExist) {
-                // Database already has tables, skip migration
-                // Just ensure admin exists
-                $adminExists = User::where('email', $request->admin_email)->exists();
-                
-                if (!$adminExists) {
-                    User::create([
-                        'name' => $request->admin_name,
-                        'email' => $request->admin_email,
-                        'password' => Hash::make($request->admin_password),
-                        'role' => 'admin',
-                        'mobile' => $request->admin_mobile ?? '',
-                    ]);
-                }
-                
-                file_put_contents(storage_path('installed'), 'INSTALLED ON ' . now());
-                return response()->json(['success' => true, 'message' => 'Installation complete! (Database already existed)']);
-            }
-
-            // Run migrations (fresh install)
-            Artisan::call('migrate:fresh', ['--force' => true]);
 
             // Create admin
             User::create([
@@ -118,6 +100,25 @@ class InstallerController extends Controller
         }
         
         file_put_contents($path, $content);
+    }
+
+    private function dropAllTables()
+    {
+        try {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0');
+            
+            $tables = DB::select('SHOW TABLES');
+            $dbName = config('database.connections.mysql.database');
+            
+            foreach ($tables as $table) {
+                $tableName = $table->{"Tables_in_{$dbName}"};
+                DB::statement("DROP TABLE IF EXISTS `{$tableName}`");
+            }
+            
+            DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        } catch (\Exception $e) {
+            // If this fails, migrate:fresh will handle it
+        }
     }
 
     private function clearConfig()
