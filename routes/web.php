@@ -85,7 +85,8 @@ Route::get('/sitemap.xml', function() {
         ->header('Content-Type', 'application/xml');
 });
 
-Route::get('/install', \App\Livewire\Installer::class)->name('install');
+// OLD Livewire installer (disabled - using standalone controller instead)
+// Route::get('/install', \App\Livewire\Installer::class)->name('install');
 
 Route::get('/login', \App\Livewire\Auth\MobileLogin::class)->name('login');
 Route::get('/register', \App\Livewire\Auth\MobileLogin::class)->name('register');
