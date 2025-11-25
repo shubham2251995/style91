@@ -48,7 +48,35 @@ class InstallerController extends Controller
             DB::purge('mysql');
             DB::connection('mysql')->getPdo();
 
-            // Run migrations
+            // Check if tables already exist
+            $tablesExist = false;
+            try {
+                DB::connection('mysql')->table('users')->limit(1)->count();
+                $tablesExist = true;
+            } catch (\Exception $e) {
+                // Tables don't exist, proceed with migration
+            }
+
+            if ($tablesExist) {
+                // Database already has tables, skip migration
+                // Just ensure admin exists
+                $adminExists = User::where('email', $request->admin_email)->exists();
+                
+                if (!$adminExists) {
+                    User::create([
+                        'name' => $request->admin_name,
+                        'email' => $request->admin_email,
+                        'password' => Hash::make($request->admin_password),
+                        'role' => 'admin',
+                        'mobile' => $request->admin_mobile ?? '',
+                    ]);
+                }
+                
+                file_put_contents(storage_path('installed'), 'INSTALLED ON ' . now());
+                return response()->json(['success' => true, 'message' => 'Installation complete! (Database already existed)']);
+            }
+
+            // Run migrations (fresh install)
             Artisan::call('migrate:fresh', ['--force' => true]);
 
             // Create admin
