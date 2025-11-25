@@ -12,17 +12,18 @@ class CartService
 {
     const SESSION_KEY = 'cart';
 
-    public function add($productId, $quantity = 1)
+    public function add($productId, $quantity = 1, $variantId = null)
     {
         try {
             $cart = $this->get();
+            $cartKey = $productId . ($variantId ? '_' . $variantId : '');
 
             if (empty($cart)) {
                 session()->put('cart_expires_at', now()->addMinutes(10));
             }
 
-            if (isset($cart[$productId])) {
-                $cart[$productId]['quantity'] += $quantity;
+            if (isset($cart[$cartKey])) {
+                $cart[$cartKey]['quantity'] += $quantity;
             } else {
                 $product = Product::find($productId);
                 if (!$product) {
@@ -30,13 +31,29 @@ class CartService
                     return;
                 }
 
-                $cart[$productId] = [
+                $price = $product->price;
+                $options = [];
+                $variantSku = null;
+
+                if ($variantId) {
+                    $variant = \App\Models\ProductVariant::find($variantId);
+                    if ($variant) {
+                        $price = $variant->price ?? $product->price;
+                        $options = $variant->options;
+                        $variantSku = $variant->sku;
+                    }
+                }
+
+                $cart[$cartKey] = [
                     'id' => $product->id,
+                    'variant_id' => $variantId,
                     'name' => $product->name,
-                    'price' => $product->price,
+                    'price' => $price,
                     'image_url' => $product->image_url,
                     'quantity' => $quantity,
                     'slug' => $product->slug,
+                    'options' => $options,
+                    'sku' => $variantSku,
                 ];
             }
 
@@ -46,12 +63,12 @@ class CartService
         }
     }
 
-    public function remove($productId)
+    public function remove($key)
     {
         try {
             $cart = Session::get(self::SESSION_KEY, []);
-            if (isset($cart[$productId])) {
-                unset($cart[$productId]);
+            if (isset($cart[$key])) {
+                unset($cart[$key]);
                 Session::put(self::SESSION_KEY, $cart);
             }
         } catch (\Exception $e) {
@@ -59,14 +76,14 @@ class CartService
         }
     }
 
-    public function updateQuantity($productId, $quantity)
+    public function updateQuantity($key, $quantity)
     {
         try {
             $cart = Session::get(self::SESSION_KEY, []);
-            if (isset($cart[$productId])) {
-                $cart[$productId]['quantity'] = $quantity;
-                if ($cart[$productId]['quantity'] <= 0) {
-                    unset($cart[$productId]);
+            if (isset($cart[$key])) {
+                $cart[$key]['quantity'] = $quantity;
+                if ($cart[$key]['quantity'] <= 0) {
+                    unset($cart[$key]);
                 }
                 Session::put(self::SESSION_KEY, $cart);
             }

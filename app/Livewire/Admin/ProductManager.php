@@ -7,6 +7,8 @@ use Livewire\WithPagination;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Models\ProductVariant;
+use App\Models\VariantOption;
 use Illuminate\Support\Str;
 
 class ProductManager extends Component
@@ -23,6 +25,10 @@ class ProductManager extends Component
     public $stock_quantity = 0;
     public $category_id;
     public $selectedTags = [];
+    
+    // Variants
+    public $variantOptions = []; // [['name' => '', 'values' => '']]
+    public $variants = []; // [['id' => null, 'sku' => '', 'price' => '', 'stock_quantity' => '', 'options' => []]]
     
     // Filters
     public $searchTerm = '';
@@ -77,6 +83,76 @@ class ProductManager extends Component
         $this->category_id = null;
         $this->selectedTags = [];
         $this->productId = null;
+        $this->variantOptions = [];
+        $this->variants = [];
+    }
+
+    public function addVariantOption()
+    {
+        $this->variantOptions[] = ['name' => '', 'values' => ''];
+    }
+
+    public function removeVariantOption($index)
+    {
+        unset($this->variantOptions[$index]);
+        $this->variantOptions = array_values($this->variantOptions);
+    }
+
+    public function generateVariants()
+    {
+        $options = [];
+        foreach ($this->variantOptions as $opt) {
+            if (!empty($opt['name']) && !empty($opt['values'])) {
+                $values = array_map('trim', explode(',', $opt['values']));
+                if (count($values) > 0) {
+                    $options[$opt['name']] = $values;
+                }
+            }
+        }
+
+        if (empty($options)) {
+            return;
+        }
+
+        $combinations = [[]];
+        foreach ($options as $name => $values) {
+            $newCombinations = [];
+            foreach ($combinations as $combination) {
+                foreach ($values as $value) {
+                    $newCombinations[] = $combination + [$name => $value];
+                }
+            }
+            $combinations = $newCombinations;
+        }
+
+        // Merge with existing variants if possible, or create new ones
+        foreach ($combinations as $combination) {
+            // Check if this combination already exists in $this->variants
+            $exists = false;
+            foreach ($this->variants as $existing) {
+                if ($existing['options'] == $combination) {
+                    $exists = true;
+                    break;
+                }
+            }
+
+            if (!$exists) {
+                $this->variants[] = [
+                    'id' => null,
+                    'sku' => $this->slug . '-' . implode('-', array_values($combination)),
+                    'price' => $this->price,
+                    'stock_quantity' => 0,
+                    'options' => $combination,
+                    'is_active' => true,
+                ];
+            }
+        }
+    }
+
+    public function removeVariant($index)
+    {
+        unset($this->variants[$index]);
+        $this->variants = array_values($this->variants);
     }
 
     public function store()
@@ -101,6 +177,50 @@ class ProductManager extends Component
         // Sync tags
         $product->tags()->sync($this->selectedTags);
 
+        // Sync Variant Options
+        $product->variantOptions()->delete();
+        foreach ($this->variantOptions as $opt) {
+            if (!empty($opt['name']) && !empty($opt['values'])) {
+                $values = array_map('trim', explode(',', $opt['values']));
+                $product->variantOptions()->create([
+                    'name' => $opt['name'],
+                    'values' => $values,
+                ]);
+            }
+        }
+
+        // Sync Variants
+        // We need to be careful not to delete variants that are still in the list but maybe have ID null (new ones)
+        // For simplicity, we can delete all and recreate, but that loses history/IDs if we want to keep them.
+        // Better: Update existing, create new, delete missing.
+        
+        $keptIds = [];
+        foreach ($this->variants as $v) {
+            if (isset($v['id']) && $v['id']) {
+                $variant = ProductVariant::find($v['id']);
+                if ($variant) {
+                    $variant->update([
+                        'sku' => $v['sku'],
+                        'price' => $v['price'] ?: null,
+                        'stock_quantity' => $v['stock_quantity'],
+                        'options' => $v['options'],
+                        'is_active' => $v['is_active'] ?? true,
+                    ]);
+                    $keptIds[] = $variant->id;
+                }
+            } else {
+                $variant = $product->variants()->create([
+                    'sku' => $v['sku'],
+                    'price' => $v['price'] ?: null,
+                    'stock_quantity' => $v['stock_quantity'],
+                    'options' => $v['options'],
+                    'is_active' => $v['is_active'] ?? true,
+                ]);
+                $keptIds[] = $variant->id;
+            }
+        }
+        $product->variants()->whereNotIn('id', $keptIds)->delete();
+
         session()->flash('message', $this->productId ? 'Product Updated Successfully.' : 'Product Created Successfully.');
 
         $this->closeModal();
@@ -119,6 +239,26 @@ class ProductManager extends Component
         $this->stock_quantity = $product->stock_quantity;
         $this->category_id = $product->category_id;
         $this->selectedTags = $product->tags->pluck('id')->toArray();
+
+        // Load Variant Options
+        $this->variantOptions = $product->variantOptions->map(function($opt) {
+            return [
+                'name' => $opt->name,
+                'values' => implode(', ', $opt->values),
+            ];
+        })->toArray();
+
+        // Load Variants
+        $this->variants = $product->variants->map(function($v) {
+            return [
+                'id' => $v->id,
+                'sku' => $v->sku,
+                'price' => $v->price,
+                'stock_quantity' => $v->stock_quantity,
+                'options' => $v->options,
+                'is_active' => $v->is_active,
+            ];
+        })->toArray();
 
         $this->openModal();
     }

@@ -193,6 +193,70 @@
                                     @endforeach
                                 </div>
                             </div>
+
+                            <!-- Variants Section -->
+                            <div class="border-t pt-4 mt-4">
+                                <h4 class="text-md font-bold text-gray-800 mb-2">Product Variants</h4>
+                                
+                                <!-- Options Definition -->
+                                <div class="mb-4 bg-gray-50 p-3 rounded">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Variant Options (e.g. Size, Color)</label>
+                                    @foreach($variantOptions as $index => $option)
+                                        <div class="flex gap-2 mb-2">
+                                            <input type="text" wire:model="variantOptions.{{ $index }}.name" placeholder="Name (e.g. Size)" class="w-1/3 border-gray-300 rounded-md shadow-sm sm:text-sm">
+                                            <input type="text" wire:model="variantOptions.{{ $index }}.values" placeholder="Values (comma separated, e.g. S, M, L)" class="w-full border-gray-300 rounded-md shadow-sm sm:text-sm">
+                                            <button wire:click="removeVariantOption({{ $index }})" class="text-red-500 hover:text-red-700">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            </button>
+                                        </div>
+                                    @endforeach
+                                    <div class="flex gap-2 mt-2">
+                                        <button wire:click="addVariantOption" class="text-sm text-brand-dark hover:underline">+ Add Option</button>
+                                        <button wire:click="generateVariants" class="text-sm text-brand-dark hover:underline ml-4">Generate Variants</button>
+                                    </div>
+                                </div>
+
+                                <!-- Variants List -->
+                                @if(count($variants) > 0)
+                                    <div class="overflow-x-auto">
+                                        <table class="min-w-full divide-y divide-gray-200">
+                                            <thead class="bg-gray-50">
+                                                <tr>
+                                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Options</th>
+                                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">SKU</th>
+                                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
+                                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Stock</th>
+                                                    <th class="px-3 py-2"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="bg-white divide-y divide-gray-200">
+                                                @foreach($variants as $index => $variant)
+                                                    <tr>
+                                                        <td class="px-3 py-2 text-sm text-gray-900">
+                                                            @foreach($variant['options'] as $key => $val)
+                                                                <span class="inline-block bg-gray-100 rounded px-1 text-xs">{{ $key }}: {{ $val }}</span>
+                                                            @endforeach
+                                                        </td>
+                                                        <td class="px-3 py-2">
+                                                            <input type="text" wire:model="variants.{{ $index }}.sku" class="w-full border-gray-300 rounded-md shadow-sm text-xs">
+                                                        </td>
+                                                        <td class="px-3 py-2">
+                                                            <input type="number" step="0.01" wire:model="variants.{{ $index }}.price" class="w-20 border-gray-300 rounded-md shadow-sm text-xs" placeholder="Default">
+                                                        </td>
+                                                        <td class="px-3 py-2">
+                                                            <input type="number" wire:model="variants.{{ $index }}.stock_quantity" class="w-20 border-gray-300 rounded-md shadow-sm text-xs">
+                                                        </td>
+                                                        <td class="px-3 py-2 text-right">
+                                                            <button wire:click="removeVariant({{ $index }})" class="text-red-500 hover:text-red-700">
+                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @endif
                         </div>
                     </div>
                     <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">

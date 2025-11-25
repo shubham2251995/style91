@@ -59,9 +59,12 @@ class Cart extends Component
         }
     }
 
-    public function increment($productId)
+    public function increment($itemId)
     {
-        app(CartService::class)->add($productId, 1);
+        $cart = app(CartService::class)->get();
+        if (isset($cart[$itemId])) {
+            app(CartService::class)->updateQuantity($itemId, $cart[$itemId]['quantity'] + 1);
+        }
     }
 
     public function decrement($productId)

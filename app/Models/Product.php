@@ -43,14 +43,33 @@ class Product extends Model
         return $this->variants()->exists();
     }
 
+    public function variantOptions()
+    {
+        return $this->hasMany(VariantOption::class)->orderBy('display_order');
+    }
+
     public function availableSizes()
     {
-        return $this->variants()->where('is_active', true)->distinct()->pluck('size')->filter();
+        // Get sizes from active variants
+        return $this->variants()
+            ->where('is_active', true)
+            ->get()
+            ->pluck('options.size')
+            ->filter()
+            ->unique()
+            ->values();
     }
 
     public function availableColors()
     {
-        return $this->variants()->where('is_active', true)->distinct()->pluck('color')->filter();
+        // Get colors from active variants
+        return $this->variants()
+            ->where('is_active', true)
+            ->get()
+            ->pluck('options.color')
+            ->filter()
+            ->unique()
+            ->values();
     }
 
     public function category()

@@ -68,8 +68,8 @@
             <!-- Price Block -->
             <div class="flex flex-col items-end">
                 <div class="flex items-baseline gap-2">
-                    <p class="text-3xl md:text-4xl font-black text-brand-black">₹{{ number_format($product->price * 80) }}</p>
-                    <span class="text-lg text-gray-400 line-through font-medium">₹{{ number_format(($product->price * 80) + 499) }}</span>
+                    <p class="text-3xl md:text-4xl font-black text-brand-black">₹{{ number_format($variantPrice * 80) }}</p>
+                    <span class="text-lg text-gray-400 line-through font-medium">₹{{ number_format(($variantPrice * 80) + 499) }}</span>
                 </div>
                 <a href="{{ route('size-guide') }}" class="text-xs font-bold text-brand-accent hover:text-brand-black uppercase tracking-wider flex items-center gap-1 mt-1">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -80,9 +80,33 @@
             </div>
         </div>
 
+        <!-- Variant Selectors -->
+        @if($product->hasVariants())
+            <div class="mb-8 space-y-4">
+                @foreach($availableOptions as $option)
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">{{ $option['name'] }}</label>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($option['values'] as $value)
+                                <button 
+                                    wire:click="$set('selectedOptions.{{ $option['name'] }}', '{{ $value }}')"
+                                    class="px-4 py-2 rounded-lg border-2 text-sm font-bold transition-all
+                                    {{ isset($selectedOptions[$option['name']]) && $selectedOptions[$option['name']] == $value 
+                                        ? 'border-brand-black bg-brand-black text-white' 
+                                        : 'border-gray-200 text-gray-600 hover:border-gray-300' }}"
+                                >
+                                    {{ $value }}
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+
         <!-- Stock Alert -->
         @if($this->stockAlertActive)
-            @if($product->stock_quantity > 0 && $product->stock_quantity <= 10)
+            @if($variantStock > 0 && $variantStock <= 10)
                 <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-8">
                     <div class="flex items-center gap-3">
                         <div class="animate-pulse">
@@ -92,11 +116,11 @@
                         </div>
                         <div>
                             <p class="font-black text-red-600 text-xs uppercase tracking-wider">Low Stock Alert</p>
-                            <p class="text-xs text-red-500 font-medium">Only {{ $product->stock_quantity }} units remaining. Secure yours now.</p>
+                            <p class="text-xs text-red-500 font-medium">Only {{ $variantStock }} units remaining. Secure yours now.</p>
                         </div>
                     </div>
                 </div>
-            @elseif($product->stock_quantity <= 0)
+            @elseif($variantStock <= 0)
                 <div class="bg-gray-100 border-l-4 border-gray-400 p-4 mb-8">
                     <p class="font-black text-gray-500 text-xs uppercase tracking-wider">Out of Stock</p>
                     <p class="text-xs text-gray-500">This item is currently unavailable.</p>
@@ -118,7 +142,7 @@
                 <button 
                     wire:click="addToCart" 
                     wire:loading.attr="disabled"
-                    @if($product->stock_quantity <= 0) disabled @endif
+                    @if($variantStock <= 0) disabled @endif
                     class="w-full bg-brand-black text-white font-black text-lg py-4 rounded-xl relative overflow-hidden transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl shadow-brand-accent/20"
                     x-data="{ added: @entangle('added') }">
                     

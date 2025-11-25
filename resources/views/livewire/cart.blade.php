@@ -10,6 +10,13 @@
                 <div class="flex-1">
                     <h3 class="font-bold text-lg leading-tight">{{ $item['name'] }}</h3>
                     <p class="text-brand-accent font-mono text-sm">${{ $item['price'] }}</p>
+                    @if(isset($item['options']) && count($item['options']) > 0)
+                        <div class="text-xs text-gray-400 mt-1">
+                            @foreach($item['options'] as $key => $value)
+                                <span class="mr-2">{{ $key }}: {{ $value }}</span>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
                 <div class="flex flex-col items-end gap-2">

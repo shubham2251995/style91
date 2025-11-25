@@ -168,7 +168,25 @@ class CheckoutAddress extends Component
 
     public function proceedToPayment()
     {
-        return redirect()->route('checkout.payment');
+        $cartTotal = $this->getCartTotal();
+        $finalTotal = $cartTotal + $this->shippingCost - $this->discount;
+
+        session(['pending_order' => [
+            'total' => $finalTotal,
+            'subtotal' => $cartTotal,
+            'shipping_cost' => $this->shippingCost,
+            'discount' => $this->discount,
+            'shipping_name' => $this->fullName,
+            'shipping_phone' => $this->phone,
+            'shipping_email' => $this->email,
+            'shipping_address' => $this->addressLine1 . ($this->addressLine2 ? ', ' . $this->addressLine2 : ''),
+            'shipping_city' => $this->city,
+            'shipping_state' => $this->state,
+            'shipping_postcode' => $this->postcode,
+            'shipping_country' => $this->country,
+        ]]);
+
+        $this->dispatch('goToPayment');
     }
 
     private function getCartTotal()

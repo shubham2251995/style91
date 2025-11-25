@@ -15,6 +15,13 @@ class ProductShow extends Component
     public $selectedVariant = null;
     public $quantity = 1;
     
+    // Variant Properties
+    public $selectedOptions = [];
+    public $variantPrice;
+    public $variantStock;
+    public $variantId;
+    public $availableOptions = [];
+    
     // SEO Meta Tags
     public $metaTitle;
     public $metaDescription;
@@ -38,11 +45,66 @@ class ProductShow extends Component
         $viewed = array_slice($viewed, 0, 12);
         
         session(['recently_viewed' => $viewed]);
+
+        // Initialize variants
+        $this->availableOptions = $this->product->variantOptions->map(function($opt) {
+            return [
+                'name' => $opt->name,
+                'values' => $opt->values,
+            ];
+        })->toArray();
+
+        if ($this->product->hasVariants()) {
+            $firstVariant = $this->product->variants()->where('is_active', true)->first();
+            if ($firstVariant) {
+                $this->selectedOptions = $firstVariant->options;
+                $this->updateVariantInfo();
+            } else {
+                // No active variants
+                $this->variantPrice = $this->product->price;
+                $this->variantStock = 0;
+            }
+        } else {
+            $this->variantPrice = $this->product->price;
+            $this->variantStock = $this->product->stock_quantity;
+        }
+    }
+
+    public function updatedSelectedOptions()
+    {
+        $this->updateVariantInfo();
+    }
+
+    public function updateVariantInfo()
+    {
+        $variant = $this->product->variants()
+            ->where('is_active', true)
+            ->get()
+            ->first(function($v) {
+                // Compare arrays (order independent)
+                return empty(array_diff_assoc($v->options, $this->selectedOptions)) && 
+                       empty(array_diff_assoc($this->selectedOptions, $v->options));
+            });
+
+        if ($variant) {
+            $this->variantId = $variant->id;
+            $this->variantPrice = $variant->price ?? $this->product->price;
+            $this->variantStock = $variant->stock_quantity;
+        } else {
+            $this->variantId = null;
+            $this->variantPrice = $this->product->price;
+            $this->variantStock = 0; // Unavailable combination
+        }
     }
 
     public function addToCart()
     {
-        app(CartService::class)->add($this->product->id);
+        if ($this->product->hasVariants() && !$this->variantId) {
+            // Should probably show error, but UI should prevent this
+            return;
+        }
+
+        app(CartService::class)->add($this->product->id, $this->quantity, $this->variantId);
         $this->added = true;
         
         // Reset button state after 2 seconds
