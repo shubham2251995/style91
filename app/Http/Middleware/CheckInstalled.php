@@ -10,16 +10,16 @@ class CheckInstalled
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $isInstalled = file_exists(storage_path('installed'));
-
-        // If not installed and trying to access anything other than install routes
-        if (!$isInstalled && !$request->is('install*') && !$request->is('livewire/*')) {
-            return redirect()->route('install');
+        // Always allow install routes to pass through
+        if ($request->is('install') || $request->is('install/*')) {
+            return $next($request);
         }
 
-        // If installed and trying to access install routes
-        if ($isInstalled && $request->is('install*')) {
-            return redirect()->route('home');
+        $isInstalled = file_exists(storage_path('installed'));
+
+        // If not installed, redirect to installer
+        if (!$isInstalled) {
+            return redirect('/install');
         }
 
         return $next($request);

@@ -18,9 +18,14 @@ use App\Livewire\Checkout;
 
 use App\Livewire\FlexCard;
 
-// Standalone Installer (no dependencies)
+// Multi-Step Installer
 Route::get('/install', [App\Http\Controllers\InstallerController::class, 'index'])->name('installer');
-Route::post('/install-process', [App\Http\Controllers\InstallerController::class, 'install'])->name('installer.process');
+Route::get('/install/check-requirements', [App\Http\Controllers\InstallerController::class, 'checkRequirements']);
+Route::post('/install/test-database', [App\Http\Controllers\InstallerController::class, 'testDatabase']);
+Route::post('/install/clean-database', [App\Http\Controllers\InstallerController::class, 'cleanDatabase']);
+Route::post('/install/run-migrations', [App\Http\Controllers\InstallerController::class, 'runMigrations']);
+Route::post('/install/seed-database', [App\Http\Controllers\InstallerController::class, 'seedDatabase']);
+Route::post('/install/create-admin', [App\Http\Controllers\InstallerController::class, 'createAdmin']);
 
 use App\Livewire\Wardrobe\Index as WardrobeIndex;
 use App\Livewire\MysteryBox\Index as MysteryBoxIndex;
