@@ -32,6 +32,11 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function returnRequests()
+    {
+        return $this->hasMany(ReturnRequest::class);
+    }
+
     public function influencer()
     {
         return $this->belongsTo(Influencer::class);

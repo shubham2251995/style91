@@ -133,9 +133,17 @@
                             <div class="bg-gray-50 p-4 rounded-lg">
                                 <h4 class="font-bold text-gray-900 mb-2">Shipping Address</h4>
                                 <p class="text-sm">{{ $selectedOrder->shipping_address ?? 'No address provided' }}</p>
-                                @if($selectedOrder->tracking_number)
-                                    <p class="text-sm mt-2"><span class="font-medium">Tracking:</span> {{ $selectedOrder->tracking_number }}</p>
-                                @endif
+                                
+                                <div class="mt-4 border-t pt-2">
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">Tracking Number</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" wire:model="trackingNumber" placeholder="Enter tracking #" class="flex-1 text-sm border-gray-300 rounded-md">
+                                        <button wire:click="updateTracking({{ $selectedOrder->id }})" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs hover:bg-indigo-700">Save</button>
+                                    </div>
+                                    @if($selectedOrder->tracking_number)
+                                        <p class="text-xs text-green-600 mt-1">Current: {{ $selectedOrder->tracking_number }}</p>
+                                    @endif
+                                </div>
                             </div>
                         </div>
 

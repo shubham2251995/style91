@@ -58,6 +58,7 @@
                                     <div>
                                         <p class="font-bold text-sm text-gray-500">ORDER #{{ $order->id }}</p>
                                         <p class="text-xs text-gray-400">{{ $order->created_at->format('M d, Y') }}</p>
+                                        <a href="{{ route('account.order', $order->id) }}" class="text-indigo-600 text-sm hover:underline mt-1 inline-block">View Details</a>
                                     </div>
                                     <div class="text-right">
                                         <p class="font-bold text-lg">${{ number_format($order->total, 2) }}</p>

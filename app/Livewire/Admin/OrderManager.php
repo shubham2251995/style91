@@ -14,6 +14,7 @@ class OrderManager extends Component
     public $isDetailsOpen = false;
     public $selectedOrder;
     public $internalNote = '';
+    public $trackingNumber = '';
 
     // Filters
     public $searchTerm = '';
@@ -48,6 +49,23 @@ class OrderManager extends Component
         $order->save();
 
         session()->flash('message', 'Order status updated to ' . ucfirst($newStatus));
+        
+        if ($this->selectedOrder && $this->selectedOrder->id == $orderId) {
+            $this->selectedOrder = Order::with(['user', 'items.product', 'items.variant'])->findOrFail($orderId);
+        }
+    }
+
+    public function updateTracking($orderId)
+    {
+        $order = Order::findOrFail($orderId);
+        $order->tracking_number = $this->trackingNumber;
+        if ($this->trackingNumber && !$order->shipped_at) {
+             $order->shipped_at = now();
+             $order->status = 'shipped';
+        }
+        $order->save();
+
+        session()->flash('message', 'Tracking number updated');
         
         if ($this->selectedOrder && $this->selectedOrder->id == $orderId) {
             $this->selectedOrder = Order::with(['user', 'items.product', 'items.variant'])->findOrFail($orderId);

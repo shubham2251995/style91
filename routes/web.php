@@ -43,6 +43,7 @@ Route::get('/flex/{orderId}', FlexCard::class)->name('flex');
 Route::get('/wardrobe', WardrobeIndex::class)->name('wardrobe')->middleware('auth');
 Route::get('/wishlist', \App\Livewire\WishlistIndex::class)->name('wishlist')->middleware('auth');
 Route::get('/account', \App\Livewire\CustomerDashboard::class)->name('account')->middleware('auth');
+Route::get('/account/orders/{orderId}', \App\Livewire\OrderDetails::class)->name('account.order')->middleware('auth');
 Route::get('/gift-cards', \App\Livewire\GiftCardPurchase::class)->name('gift-cards.purchase');
 Route::get('/track-order', \App\Livewire\OrderTracking::class)->name('track-order');
 Route::get('/mystery-boxes', MysteryBoxIndex::class)->name('mystery-box.index');
@@ -181,6 +182,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/customers', \App\Livewire\Admin\CustomerManager::class)->name('customer-manager');
     Route::get('/variants', \App\Livewire\Admin\VariantManager::class)->name('variant-manager');
     Route::get('/bundles', \App\Livewire\Admin\BundleManager::class)->name('bundle-manager');
+    Route::get('/returns', \App\Livewire\Admin\ReturnManager::class)->name('return-manager');
+    Route::get('/abandoned-carts', \App\Livewire\Admin\AbandonedCartManager::class)->name('abandoned-cart-manager');
+    Route::get('/loyalty', \App\Livewire\Admin\LoyaltyManager::class)->name('loyalty-manager');
+    Route::get('/flash-sales', \App\Livewire\Admin\FlashSaleManager::class)->name('flash-sale-manager');
+    Route::get('/newsletter', \App\Livewire\Admin\NewsletterManager::class)->name('newsletter-manager');
     Route::get('/sections', \App\Livewire\Admin\SectionManager::class)->name('section-manager');
 });
 

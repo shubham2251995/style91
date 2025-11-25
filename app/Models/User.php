@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'mobile',
+        'referral_code',
         'role',
         'lifetime_spend',
         'membership_tier_id',
