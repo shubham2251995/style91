@@ -18,6 +18,10 @@ use App\Livewire\Checkout;
 
 use App\Livewire\FlexCard;
 
+// Standalone Installer (no dependencies)
+Route::get('/install', [App\Http\Controllers\InstallerController::class, 'index'])->name('installer');
+Route::post('/install-process', [App\Http\Controllers\InstallerController::class, 'install'])->name('installer.process');
+
 use App\Livewire\Wardrobe\Index as WardrobeIndex;
 use App\Livewire\MysteryBox\Index as MysteryBoxIndex;
 use App\Livewire\MysteryBox\Show as MysteryBoxShow;
