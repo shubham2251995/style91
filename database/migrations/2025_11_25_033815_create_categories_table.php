@@ -16,13 +16,18 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
+            $table->foreignId('parent_id')->nullable()->constrained('categories')->nullOnDelete();
             $table->string('image_url')->nullable();
-            $table->integer('sort_order')->default(0);
+            $table->integer('display_order')->default(0);
             $table->boolean('is_active')->default(true);
+            $table->string('meta_title')->nullable();
+            $table->text('meta_description')->nullable();
+            $table->string('meta_keywords')->nullable();
             $table->timestamps();
 
             $table->index('slug');
             $table->index('is_active');
+            $table->index('parent_id');
         });
     }
 

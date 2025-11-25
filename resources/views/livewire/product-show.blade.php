@@ -21,14 +21,14 @@
     }
     </script>
     {{-- End Structured Data --}}
-    <!-- Full Bleed Image -->
-    <div class="h-[70vh] w-full relative">
+    <!-- Full Bleed Image (Responsive Height) -->
+    <div class="h-[65vh] md:h-[85vh] w-full relative">
         <img src="{{ $product->image_url }}" 
              class="w-full h-full object-cover" 
              alt="{{ $product->name }}">
         
         <!-- Back Button -->
-        <a href="{{ route('home') }}" class="absolute top-4 left-4 bg-white/20 backdrop-blur-md p-3 rounded-full text-white hover:bg-white hover:text-black transition-all">
+        <a href="{{ route('home') }}" class="absolute top-4 left-4 bg-white/20 backdrop-blur-md p-3 rounded-full text-white hover:bg-white hover:text-black transition-all z-10">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
             </svg>
@@ -36,118 +36,134 @@
 
 
         <!-- Wishlist & Wardrobe Buttons -->
-        <div class="absolute top-4 right-4 flex gap-2">
+        <div class="absolute top-4 right-4 flex gap-2 z-10">
             <livewire:wishlist-button :productId="$product->id" />
             
             @if($this->digitalWardrobeActive)
                 <livewire:wardrobe.add-button :product="$product" />
             @endif
         </div>
+        
+        <!-- Gradient Overlay for Text Readability -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
     </div>
 
     <!-- Smart Disclosure Area -->
-    <div class="absolute bottom-0 w-full bg-white rounded-t-3xl p-8 -mt-8 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]"
+    <div class="relative -mt-12 bg-white rounded-t-[2.5rem] px-6 pt-10 pb-32 md:pb-12 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] min-h-[50vh]"
          x-data="{ expanded: false }">
         
+        <!-- Drag Handle (Visual Cue) -->
+        <div class="absolute top-3 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full md:hidden"></div>
+        
         <!-- Minimal Header (Always Visible) -->
-        <div class="flex justify-between items-start mb-6">
+        <div class="flex flex-col md:flex-row justify-between items-start mb-8 gap-4">
             <div>
-                <h1 class="text-3xl font-bold tracking-tight mb-1">{{ $product->name }}</h1>
-                <p class="text-brand-gray/60 font-mono text-sm">Limited Edition • Drop #001</p>
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="px-2 py-0.5 bg-brand-accent text-brand-black text-[10px] font-bold uppercase tracking-wider rounded-sm">New Arrival</span>
+                    <p class="text-brand-gray/60 font-mono text-xs uppercase tracking-widest">Drop #001</p>
+                </div>
+                <h1 class="text-3xl md:text-5xl font-black tracking-tight text-brand-black leading-none mb-2">{{ $product->name }}</h1>
             </div>
-            <div class="text-right">
-                <p class="text-sm leading-relaxed mb-6 text-brand-gray">{{ $product->description }}</p>
+            
+            <!-- Price Block -->
+            <div class="flex flex-col items-end">
+                <div class="flex items-baseline gap-2">
+                    <p class="text-3xl md:text-4xl font-black text-brand-black">₹{{ number_format($product->price * 80) }}</p>
+                    <span class="text-lg text-gray-400 line-through font-medium">₹{{ number_format(($product->price * 80) + 499) }}</span>
+                </div>
+                <a href="{{ route('size-guide') }}" class="text-xs font-bold text-brand-accent hover:text-brand-black uppercase tracking-wider flex items-center gap-1 mt-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                    </svg>
+                    Size Guide
+                </a>
+            </div>
+        </div>
 
         <!-- Stock Alert -->
         @if($this->stockAlertActive)
             @if($product->stock_quantity > 0 && $product->stock_quantity <= 10)
-                <div class="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-6">
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-8">
                     <div class="flex items-center gap-3">
-                        <div class="bg-red-500 rounded-full p-1.5">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-white">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                        <div class="animate-pulse">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-red-500">
+                                <path fill-rule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
                             </svg>
                         </div>
                         <div>
-                            <p class="font-bold text-red-500 text-sm">LOW STOCK ALERT</p>
-                            <p class="text-xs text-gray-400">Only {{ $product->stock_quantity }} units remaining. Order soon!</p>
+                            <p class="font-black text-red-600 text-xs uppercase tracking-wider">Low Stock Alert</p>
+                            <p class="text-xs text-red-500 font-medium">Only {{ $product->stock_quantity }} units remaining. Secure yours now.</p>
                         </div>
                     </div>
                 </div>
             @elseif($product->stock_quantity <= 0)
-                <div class="bg-gray-500/10 border border-gray-500/20 rounded-xl p-4 mb-6 text-center">
-                    <p class="font-bold text-gray-400 text-sm">OUT OF STOCK</p>
+                <div class="bg-gray-100 border-l-4 border-gray-400 p-4 mb-8">
+                    <p class="font-black text-gray-500 text-xs uppercase tracking-wider">Out of Stock</p>
                     <p class="text-xs text-gray-500">This item is currently unavailable.</p>
                 </div>
             @endif
         @endif
-        <!-- Price -->
-        <div class="flex items-baseline gap-3 mb-6">
-            <p class="text-4xl font-black text-brand-dark">${{ number_format($product->price, 2) }}</p>
-            <a href="{{ route('size-guide') }}" class="text-sm text-brand-accent hover:underline flex items-center gap-1">
-                📏 Size Guide
-            </a>
-        </div>         
-                @if($this->tieredPricingActive)
-                    <livewire:tiered-pricing :tiers="$product->tiers" />
-                @endif
                 
-                @if($this->socialUnlockActive)
-                    <livewire:social-unlock :productId="$product->id" />
+        @if($this->tieredPricingActive)
+            <livewire:tiered-pricing :tiers="$product->tiers" />
+        @endif
+        
+        @if($this->socialUnlockActive)
+            <livewire:social-unlock :productId="$product->id" />
+        @endif
 
-                <div class="flex space-x-1 mt-2 justify-end">
-                    <span class="w-3 h-3 rounded-full bg-black border border-gray-300"></span>
-                    <span class="w-3 h-3 rounded-full bg-gray-400"></span>
-                </div>
+        <!-- Primary Action Button (Sticky on Mobile with Safe Area) -->
+        <div class="fixed bottom-16 left-0 w-full p-4 z-40 md:static md:p-0 md:mb-8 md:z-auto pointer-events-none">
+            <div class="pointer-events-auto max-w-md mx-auto md:max-w-none">
+                <button 
+                    wire:click="addToCart" 
+                    wire:loading.attr="disabled"
+                    @if($product->stock_quantity <= 0) disabled @endif
+                    class="w-full bg-brand-black text-white font-black text-lg py-4 rounded-xl relative overflow-hidden transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl shadow-brand-accent/20"
+                    x-data="{ added: @entangle('added') }">
+                    
+                    <!-- Loading State -->
+                    <div wire:loading class="absolute inset-0 flex items-center justify-center bg-brand-black z-10">
+                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+
+                    <div class="absolute inset-0 flex items-center justify-center gap-3 transition-all duration-300"
+                         :class="added ? 'translate-y-10 opacity-0' : 'translate-y-0 opacity-100'">
+                        <span>ADD TO CART</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 5c.07.277-.029.561-.225.761A1.125 1.125 0 0119.66 15H4.34a1.125 1.125 0 01-.894-1.732l1.263-5a1.125 1.125 0 011.092-.852H18.57c.47 0 .91.247 1.092.852z" />
+                        </svg>
+                    </div>
+
+                    <div class="absolute inset-0 flex items-center justify-center gap-2 text-brand-accent font-black transition-all duration-300"
+                         :class="added ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'">
+                        <span>SECURED</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                    </div>
+                </button>
             </div>
-        </div>
-
-        <!-- Primary Action Button (Sticky on Mobile) -->
-        <div class="fixed bottom-0 left-0 w-full p-4 bg-white border-t border-gray-100 z-50 md:static md:p-0 md:border-0 md:z-auto">
-            <button 
-                wire:click="addToCart" 
-                wire:loading.attr="disabled"
-                @if($product->stock_quantity <= 0) disabled @endif
-                class="w-full bg-brand-dark text-white font-bold py-4 rounded-xl relative overflow-hidden transition-all hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg md:shadow-none"
-                x-data="{ added: @entangle('added') }">
-                
-                <!-- Loading State -->
-                <div wire:loading class="absolute inset-0 flex items-center justify-center bg-brand-dark z-10">
-                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                </div>
-
-                <div class="absolute inset-0 flex items-center justify-center gap-2 transition-all duration-300"
-                     :class="added ? 'translate-y-10 opacity-0' : 'translate-y-0 opacity-100'">
-                    <span>ADD TO CART</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-                    </svg>
-                </div>
-
-                <div class="absolute inset-0 flex items-center justify-center gap-2 text-green-400 font-bold transition-all duration-300"
-                     :class="added ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'">
-                    <span>SECURED</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                    </svg>
-                </div>
-            </button>
         </div>
 
         <!-- Crowd Drop Widget -->
         @if($this->crowdDropActive)
-            <livewire:crowd-drop.widget :product="$product" />
+            <div class="mb-8">
+                <livewire:crowd-drop.widget :product="$product" />
+            </div>
         @endif
 
         <!-- Fit Check Gallery -->
         @if($this->fitCheckActive)
-            <livewire:fit-check.gallery :productId="$product->id" />
+            <div class="mb-8">
+                <livewire:fit-check.gallery :productId="$product->id" />
+            </div>
         @endif
 
-        <div class="flex gap-4 mb-8">
+        <div class="flex gap-4 mb-8 overflow-x-auto pb-2 scrollbar-hide">
             @if($this->squadModeActive)
                 <livewire:squad.widget :product="$product" />
             @endif
@@ -163,42 +179,38 @@
 
         <!-- Product Description -->
         @if($product->description)
-        <div class="px-6 pb-6">
-            <h3 class="font-bold text-lg mb-2 text-brand-dark">Description</h3>
-            <div class="prose text-gray-600 text-sm">
+        <div class="pb-6">
+            <h3 class="font-black text-lg mb-4 text-brand-black uppercase tracking-tight">Description</h3>
+            <div class="prose text-gray-600 text-sm leading-relaxed">
                 {!! $product->description !!}
             </div>
             
             <!-- Social Share -->
-            <div class="mt-6 pt-6 border-t border-gray-200">
+            <div class="mt-8 pt-8 border-t border-gray-100">
                 <livewire:social-share :url="route('product', $product->slug)" :title="$product->name" />
             </div>
         </div>
         @endif
 
         <!-- Hidden Details (Smart Disclosure) -->
-        <div x-show="expanded" x-collapse class="space-y-6 text-brand-gray/80">
-            <p>
-                {{ $product->description }}
-            </p>
-            
+        <div x-show="expanded" x-collapse class="space-y-6 text-brand-gray/80 border-t border-gray-100 pt-6">
             <div class="grid grid-cols-2 gap-4">
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h4 class="font-bold text-black mb-1">Category</h4>
-                    <p class="text-sm">{{ $product->category }}</p>
+                <div class="bg-gray-50 p-4 rounded-xl">
+                    <h4 class="font-bold text-black mb-1 text-xs uppercase tracking-wider">Category</h4>
+                    <p class="text-sm font-medium">{{ $product->category }}</p>
                 </div>
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h4 class="font-bold text-black mb-1">Material</h4>
-                    <p class="text-sm">100% Organic Cotton</p>
+                <div class="bg-gray-50 p-4 rounded-xl">
+                    <h4 class="font-bold text-black mb-1 text-xs uppercase tracking-wider">Material</h4>
+                    <p class="text-sm font-medium">100% Organic Cotton</p>
                 </div>
             </div>
         </div>
 
         <!-- Expand Trigger -->
-        <button @click="expanded = !expanded" class="w-full flex justify-center py-2 text-brand-gray/40 hover:text-brand-black transition-colors">
+        <button @click="expanded = !expanded" class="w-full flex justify-center py-4 text-gray-400 hover:text-brand-black transition-colors">
             <div class="flex flex-col items-center gap-1">
-                <span class="text-xs font-mono tracking-widest uppercase" x-text="expanded ? 'LESS INFO' : 'MORE INFO'"></span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 transition-transform duration-300" :class="expanded ? 'rotate-180' : ''">
+                <span class="text-[10px] font-black tracking-widest uppercase" x-text="expanded ? 'LESS INFO' : 'MORE INFO'"></span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 transition-transform duration-300" :class="expanded ? 'rotate-180' : ''">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                 </svg>
             </div>
@@ -206,7 +218,8 @@
     </div>
 
     <!-- Reviews Section -->
-    <div class="mt-8 px-6 pb-6">
+    <div class="px-6 pb-24 max-w-7xl mx-auto">
         <livewire:review-form :productId="$product->id" />
     </div>
 </div>
+```

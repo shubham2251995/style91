@@ -131,7 +131,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/plugins', AdminPluginManager::class)->name('plugins');
     Route::get('/god-view', GodView::class)->name('god-view');
     Route::get('/price-tiers', PriceTiers::class)->name('price-tiers');
-    Route::get('/custom-branding', \App\Livewire\Admin\CustomBranding::class)->name('custom-branding');
+    Route::get('/theme-manager', \App\Livewire\Admin\ThemeManager::class)->name('theme-manager');
     Route::get('/tiers', \App\Livewire\Admin\TierManager::class)->name('tier-manager');
     
     // The Eye (Analytics)
@@ -165,6 +165,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/site-settings', \App\Livewire\Admin\SiteSettings::class)->name('site-settings');
     Route::get('/header-footer', \App\Livewire\Admin\HeaderFooterManager::class)->name('header-footer');
     Route::get('/pages', \App\Livewire\Admin\PageManager::class)->name('page-manager');
+    Route::get('/orders', \App\Livewire\Admin\OrderManager::class)->name('order-manager');
+    Route::get('/coupons', \App\Livewire\Admin\CouponManager::class)->name('coupon-manager');
+    Route::get('/products', \App\Livewire\Admin\ProductManager::class)->name('product-manager');
+    Route::get('/categories', \App\Livewire\Admin\CategoryManager::class)->name('category-manager');
+    Route::get('/tags', \App\Livewire\Admin\TagManager::class)->name('tag-manager');
+    Route::get('/inventory', \App\Livewire\Admin\InventoryManager::class)->name('inventory-manager');
+    Route::get('/customers', \App\Livewire\Admin\CustomerManager::class)->name('customer-manager');
     Route::get('/sections', \App\Livewire\Admin\SectionManager::class)->name('section-manager');
 });
 

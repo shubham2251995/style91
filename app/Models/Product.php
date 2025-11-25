@@ -13,7 +13,8 @@ class Product extends Model
         'price',
         'image_url',
         'stock_quantity',
-        'category', // Assuming we have categories or just a string
+        'category_id',
+        'category', // Keep for backward compatibility during migration
     ];
 
     public function getRouteKeyName()
@@ -50,5 +51,20 @@ class Product extends Model
     public function availableColors()
     {
         return $this->variants()->where('is_active', true)->distinct()->pluck('color')->filter();
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
+    public function hasTag($tagName)
+    {
+        return $this->tags()->where('name', $tagName)->exists();
     }
 }

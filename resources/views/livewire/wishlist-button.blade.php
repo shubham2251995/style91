@@ -1,6 +1,6 @@
 <button 
     wire:click="toggle" 
-    class="flex items-center justify-center p-2 rounded-full transition-all {{ $isInWishlist ? 'bg-red-500 text-white' : 'bg-white/10 text-gray-400 hover:bg-white/20' }}"
+    class="flex items-center justify-center p-3 rounded-full transition-all duration-300 {{ $isInWishlist ? 'bg-brand-accent text-brand-black shadow-[0_0_15px_rgba(253,216,53,0.5)]' : 'bg-white/20 backdrop-blur-md text-white hover:bg-white hover:text-brand-black' }}"
     title="{{ $isInWishlist ? 'Remove from wishlist' : 'Add to wishlist' }}"
 >
     <svg xmlns="http://www.w3.org/2000/svg" fill="{{ $isInWishlist ? 'currentColor' : 'none' }}" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">

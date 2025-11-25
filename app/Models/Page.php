@@ -18,4 +18,9 @@ class Page extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function sections()
+    {
+        return $this->hasMany(Section::class)->orderBy('order');
+    }
 }

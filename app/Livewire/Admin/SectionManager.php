@@ -3,7 +3,7 @@
 namespace App\Livewire\Admin;
 
 use Livewire\Component;
-use App\Models\HomepageSection;
+use App\Models\Section;
 use Illuminate\Support\Facades\Log;
 
 class SectionManager extends Component
@@ -39,7 +39,7 @@ class SectionManager extends Component
     public function loadSections()
     {
         try {
-            $this->sections = HomepageSection::ordered()->get()->toArray();
+            $this->sections = Section::ordered()->get()->toArray();
         } catch (\Exception $e) {
             Log::error('Error loading homepage sections: ' . $e->getMessage());
             $this->sections = [];
@@ -57,7 +57,7 @@ class SectionManager extends Component
     public function edit($id)
     {
         try {
-            $section = HomepageSection::findOrFail($id);
+            $section = Section::findOrFail($id);
             $this->editingSection = $section->id;
             $this->type = $section->type;
             $this->title = $section->title;
@@ -84,10 +84,10 @@ class SectionManager extends Component
             ];
 
             if ($this->editingSection) {
-                HomepageSection::find($this->editingSection)->update($data);
+                Section::find($this->editingSection)->update($data);
                 session()->flash('message', 'Section updated successfully.');
             } else {
-                HomepageSection::create($data);
+                Section::create($data);
                 session()->flash('message', 'Section created successfully.');
             }
 
@@ -102,7 +102,7 @@ class SectionManager extends Component
     public function delete($id)
     {
         try {
-            HomepageSection::destroy($id);
+            Section::destroy($id);
             session()->flash('message', 'Section deleted successfully.');
             $this->loadSections();
         } catch (\Exception $e) {
@@ -114,7 +114,7 @@ class SectionManager extends Component
     public function toggleActive($id)
     {
         try {
-            $section = HomepageSection::find($id);
+            $section = Section::find($id);
             $section->is_active = !$section->is_active;
             $section->save();
             $this->loadSections();
@@ -127,7 +127,7 @@ class SectionManager extends Component
     {
         try {
             foreach ($newOrder as $index => $id) {
-                HomepageSection::where('id', $id)->update(['order' => $index]);
+                Section::where('id', $id)->update(['order' => $index]);
             }
             $this->loadSections();
         } catch (\Exception $e) {

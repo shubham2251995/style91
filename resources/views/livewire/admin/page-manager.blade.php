@@ -66,7 +66,10 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Content (HTML allowed)</label>
-                                <textarea wire:model="content" rows="10" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-dark focus:border-brand-dark sm:text-sm"></textarea>
+                                <div class="mt-1">
+                                    <input id="trix" type="hidden" wire:model="content">
+                                    <trix-editor input="trix" class="trix-content border-gray-300 rounded-md shadow-sm"></trix-editor>
+                                </div>
                                 @error('content') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                             <div class="grid grid-cols-2 gap-4">
@@ -98,4 +101,12 @@
         </div>
         @endif
     </div>
+
+    @push('styles')
+    <link rel="stylesheet" href="https://unpkg.com/trix@2.0.0/dist/trix.css">
+    @endpush
+
+    @push('scripts')
+    <script src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
+    @endpush
 </div>
