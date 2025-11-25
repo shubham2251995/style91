@@ -187,6 +187,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/loyalty', \App\Livewire\Admin\LoyaltyManager::class)->name('loyalty-manager');
     Route::get('/flash-sales', \App\Livewire\Admin\FlashSaleManager::class)->name('flash-sale-manager');
     Route::get('/newsletter', \App\Livewire\Admin\NewsletterManager::class)->name('newsletter-manager');
+    Route::get('/analytics', \App\Livewire\Admin\SalesDashboard::class)->name('sales-dashboard');
+    Route::get('/reports', \App\Livewire\Admin\ReportManager::class)->name('report-manager');
     Route::get('/sections', \App\Livewire\Admin\SectionManager::class)->name('section-manager');
 });
 

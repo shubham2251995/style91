@@ -9,13 +9,25 @@
         $headerLinks = $navService->getHeader();
         $footerColumns = $navService->getFooter();
         
-        // Site Settings Service
-        $siteSettings = app(\App\Services\SiteSettingsService::class);
-        $siteName = $siteSettings->get('site_name', config('app.name', 'Style91'));
-        $metaTitle = $seoTagsArray['title'] ?? $siteSettings->get('meta_title', $siteName);
-        $metaDescription = $seoTagsArray['description'] ?? $siteSettings->get('meta_description', 'Premium Streetwear Fashion');
-        $metaKeywords = $seoTagsArray['keywords'] ?? $siteSettings->get('meta_keywords', 'streetwear, fashion');
-        $ogImage = $seoTagsArray['image'] ?? $siteSettings->get('og_image', '/images/og-default.jpg');
+        // Site Settings Service - wrapped in try-catch for pre-installation
+        try {
+            $siteSettings = app(\App\Services\SiteSettingsService::class);
+            $siteName = $siteSettings->get('site_name', config('app.name', 'Style91'));
+            $metaTitle = $seoTagsArray['title'] ?? $siteSettings->get('meta_title', $siteName);
+            $metaDescription = $seoTagsArray['description'] ?? $siteSettings->get('meta_description', 'Premium Streetwear Fashion');
+            $metaKeywords = $seoTagsArray['keywords'] ?? $siteSettings->get('meta_keywords', 'streetwear, fashion');
+            $ogImage = $seoTagsArray['image'] ?? $siteSettings->get('og_image', '/images/og-default.jpg');
+            $gaId = $siteSettings->get('google_analytics_id', env('GOOGLE_ANALYTICS_ID'));
+        } catch (\Exception $settingsError) {
+            // Settings table doesn't exist yet (pre-installation)
+            $siteName = config('app.name', 'Style91');
+            $metaTitle = $seoTagsArray['title'] ?? $siteName;
+            $metaDescription = $seoTagsArray['description'] ?? 'Premium Streetwear Fashion';
+            $metaKeywords = $seoTagsArray['keywords'] ?? 'streetwear, fashion';
+            $ogImage = $seoTagsArray['image'] ?? '/images/og-default.jpg';
+            $gaId = env('GOOGLE_ANALYTICS_ID');
+        }
+        
         $ogUrl = $seoTagsArray['url'] ?? url()->current();
         $ogType = $seoTagsArray['type'] ?? 'website';
     } catch (\Exception $e) {
@@ -31,6 +43,7 @@
         $ogImage = '/images/og-default.jpg';
         $ogUrl = url()->current();
         $ogType = 'website';
+        $gaId = env('GOOGLE_ANALYTICS_ID');
     }
 @endphp
 <!DOCTYPE html>
@@ -61,6 +74,17 @@
     @if($seoSchema)
     <script type="application/ld+json">
     {!! $seoSchema !!}
+    </script>
+    @endif
+
+    @if(isset($gaId) && $gaId && config('app.env') === 'production')
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ $gaId }}');
     </script>
     @endif
 
