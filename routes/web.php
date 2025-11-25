@@ -172,12 +172,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/coupons', \App\Livewire\Admin\CouponManager::class)->name('coupon-manager');
     Route::get('/shipping', \App\Livewire\Admin\ShippingManager::class)->name('shipping-manager');
     Route::get('/payment-gateways', \App\Livewire\Admin\PaymentGatewayManager::class)->name('payment-gateway-manager');
+    Route::get('/size-guides', \App\Livewire\Admin\SizeGuideManager::class)->name('size-guide-manager');
     Route::get('/products', \App\Livewire\Admin\ProductManager::class)->name('product-manager');
     Route::get('/categories', \App\Livewire\Admin\CategoryManager::class)->name('category-manager');
     Route::get('/tags', \App\Livewire\Admin\TagManager::class)->name('tag-manager');
     Route::get('/reviews', \App\Livewire\Admin\ReviewManager::class)->name('review-manager');
     Route::get('/inventory', \App\Livewire\Admin\InventoryManager::class)->name('inventory-manager');
     Route::get('/customers', \App\Livewire\Admin\CustomerManager::class)->name('customer-manager');
+    Route::get('/variants', \App\Livewire\Admin\VariantManager::class)->name('variant-manager');
+    Route::get('/bundles', \App\Livewire\Admin\BundleManager::class)->name('bundle-manager');
     Route::get('/sections', \App\Livewire\Admin\SectionManager::class)->name('section-manager');
 });
 

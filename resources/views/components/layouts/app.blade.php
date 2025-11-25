@@ -3,7 +3,7 @@
         $seoService = new \App\Services\SeoService();
         // Check if we have a product or other model in the view data
         $model = $product ?? null; 
-        $seoTags = $seoService->generateTags($model);
+        $seoTagsArray = $seoService->generateTags($model);
         $seoSchema = $seoService->generateSchema($model);
         $navService = new \App\Services\NavigationService();
         $headerLinks = $navService->getHeader();
@@ -12,13 +12,15 @@
         // Site Settings Service
         $siteSettings = app(\App\Services\SiteSettingsService::class);
         $siteName = $siteSettings->get('site_name', config('app.name', 'Style91'));
-        $metaTitle = $siteSettings->get('meta_title', $siteName);
-        $metaDescription = $siteSettings->get('meta_description', 'Premium Streetwear Fashion');
-        $metaKeywords = $siteSettings->get('meta_keywords', 'streetwear, fashion');
-        $ogImage = $siteSettings->get('og_image', '/images/og-default.jpg');
+        $metaTitle = $seoTagsArray['title'] ?? $siteSettings->get('meta_title', $siteName);
+        $metaDescription = $seoTagsArray['description'] ?? $siteSettings->get('meta_description', 'Premium Streetwear Fashion');
+        $metaKeywords = $seoTagsArray['keywords'] ?? $siteSettings->get('meta_keywords', 'streetwear, fashion');
+        $ogImage = $seoTagsArray['image'] ?? $siteSettings->get('og_image', '/images/og-default.jpg');
+        $ogUrl = $seoTagsArray['url'] ?? url()->current();
+        $ogType = $seoTagsArray['type'] ?? 'website';
     } catch (\Exception $e) {
         // During installation or if database not available
-        $seoTags = '';
+        $seoTagsArray = [];
         $seoSchema = '';
         $headerLinks = [];
         $footerColumns = [];
@@ -27,6 +29,8 @@
         $metaDescription = 'Premium Streetwear Fashion';
         $metaKeywords = 'streetwear, fashion';
         $ogImage = '/images/og-default.jpg';
+        $ogUrl = url()->current();
+        $ogType = 'website';
     }
 @endphp
 <!DOCTYPE html>
@@ -39,10 +43,27 @@
     <title>{{ $metaTitle ?? 'Style91' }}</title>
     <meta name="description" content="{{ $metaDescription }}">
     <meta name="keywords" content="{{ $metaKeywords }}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="{{ $ogType }}">
+    <meta property="og:url" content="{{ $ogUrl }}">
+    <meta property="og:title" content="{{ $metaTitle }}">
+    <meta property="og:description" content="{{ $metaDescription }}">
     <meta property="og:image" content="{{ $ogImage }}">
     
-    {!! $seoTags !!}
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ $ogUrl }}">
+    <meta property="twitter:title" content="{{ $metaTitle }}">
+    <meta property="twitter:description" content="{{ $metaDescription }}">
+    <meta property="twitter:image" content="{{ $ogImage }}">
+    
+    @if($seoSchema)
+    <script type="application/ld+json">
     {!! $seoSchema !!}
+    </script>
+    @endif
+
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
