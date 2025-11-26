@@ -30,17 +30,32 @@ class DatabaseSeeder extends Seeder
         // 6. Seed Pages
         $this->call(PageSeeder::class);
 
-        // 7. Seed Sample Products (good quality data suitable for production)
+        // 7. Seed Categories (NEW)
+        $this->call(CategorySeeder::class);
+
+        // 8. Seed Sample Products (good quality data suitable for production)
         $this->call(ProductSeeder::class);
         
-        // 8. Seed Price Tiers
+        // 9. Seed Price Tiers
         $this->call(PriceTierSeeder::class);
         
-        // 9. Seed Homepage Sections
+        // 10. Seed Homepage Sections
         $this->call(HomepageSectionSeeder::class);
         
-        // 10. Seed Site Settings
+        // 11. Seed Site Settings
         $this->call(SiteSettingsSeeder::class);
+
+        // 12. Seed Users (NEW)
+        $this->call(UserSeeder::class);
+
+        // 13. Seed Orders (NEW)
+        $this->call(OrderSeeder::class);
+
+        // 14. Seed Reviews (NEW)
+        $this->call(ReviewSeeder::class);
+
+        // 15. Seed Coupons (NEW)
+        $this->call(CouponSeeder::class);
     }
     
     protected function seedPlugins()

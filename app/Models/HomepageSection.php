@@ -9,6 +9,8 @@ class HomepageSection extends Model
 {
     use HasFactory;
 
+    protected $table = 'sections';
+
     protected $fillable = [
         'type',
         'title',
