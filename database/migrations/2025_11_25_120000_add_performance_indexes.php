@@ -8,9 +8,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->index('category_id');
-            $table->index('slug');
-            $table->index('is_featured');
+            // Only index existing columns that don't already have indexes
+            // category_id doesn't exist (table has 'category' string column with index already)
+            // slug already has unique index
+            // is_featured doesn't exist
+            // No indexes needed here
         });
 
         Schema::table('orders', function (Blueprint $table) {
@@ -27,9 +29,7 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropIndex(['category_id']);
-            $table->dropIndex(['slug']);
-            $table->dropIndex(['is_featured']);
+            // No indexes to drop
         });
         Schema::table('orders', function (Blueprint $table) {
             $table->dropIndex(['user_id']);

@@ -161,6 +161,21 @@
                     },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    @livewireStyles
+</head>
+<body class="font-sans antialiased bg-white text-brand-black">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-white border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <!-- Mobile Menu Button -->
+                <button type="button" class="md:hidden text-brand-dark hover:text-brand-accent">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
                 </button>

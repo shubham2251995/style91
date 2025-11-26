@@ -21,20 +21,7 @@ return new class extends Migration
             $table->index('user_id');
         });
 
-        // Referrals
-        Schema::create('referrals', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('referrer_id');
-            $table->unsignedBigInteger('referred_user_id')->nullable();
-            $table->string('referral_code')->unique();
-            $table->string('email')->nullable(); // For inviting via email
-            $table->string('status')->default('pending'); // pending, completed
-            $table->decimal('reward_amount', 10, 2)->default(0);
-            $table->timestamps();
-
-            $table->index('referrer_id');
-            $table->index('referral_code');
-        });
+// Referrals table moved to its own migration (removed duplicate)
 
         // Flash Sales
         Schema::create('flash_sales', function (Blueprint $table) {
@@ -60,7 +47,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('newsletter_subscribers');
         Schema::dropIfExists('flash_sales');
-        Schema::dropIfExists('referrals');
+// Removed duplicate drop for referrals (handled in its own migration)
         Schema::dropIfExists('loyalty_points');
     }
 };
