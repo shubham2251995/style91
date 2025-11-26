@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class SecurityHeaders
 {
@@ -15,11 +16,16 @@ class SecurityHeaders
     {
         $response = $next($request);
         
-        return $response
-            ->header('X-Frame-Options', 'SAMEORIGIN')
-            ->header('X-Content-Type-Options', 'nosniff')
-            ->header('X-XSS-Protection', '1; mode=block')
-            ->header('Referrer-Policy', 'strict-origin-when-cross-origin')
-            ->header('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+        // BinaryFileResponse doesn't support ->header() method
+        // Use headers->set() instead for all response types
+        if ($response instanceof Response) {
+            $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
+            $response->headers->set('X-Content-Type-Options', 'nosniff');
+            $response->headers->set('X-XSS-Protection', '1; mode=block');
+            $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
+            $response->headers->set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+        }
+        
+        return $response;
     }
 }
