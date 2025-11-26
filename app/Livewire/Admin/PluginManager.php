@@ -7,15 +7,25 @@ use App\Services\PluginManager as PluginService;
 
 class PluginManager extends Component
 {
+    public $successMessage = '';
+
     public function toggle($key)
     {
         $manager = app(PluginService::class);
         
         if ($manager->isActive($key)) {
             $manager->deactivate($key);
+            $this->successMessage = 'Plugin deactivated successfully!';
         } else {
             $manager->activate($key);
+            $this->successMessage = 'Plugin activated successfully!';
         }
+        
+        // Reload the plugins from database to get fresh state
+        $manager->loadPlugins();
+        
+        // Dispatch browser event for UI feedback
+        $this->dispatch('plugin-toggled');
     }
 
     public function render()

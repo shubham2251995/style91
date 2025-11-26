@@ -48,30 +48,29 @@
         <div class="fixed bottom-20 left-0 w-full pointer-events-none z-40">
             <div class="max-w-md mx-auto px-6 pointer-events-auto">
                 <div class="bg-brand-white text-brand-black rounded-2xl p-6 shadow-[0_0_30px_rgba(0,0,0,0.1)] border border-gray-100">
-                
-                @if($this->tieredPricingActive && $this->discount > 0)
-                    <div class="space-y-2 mb-4 pb-4 border-b border-black/10">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">Subtotal</span>
-                <div class="border-t border-white/10 pt-6">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-gray-400">Subtotal</span>
-                        <span class="font-mono">${{ number_format($this->total, 2) }}</span>
-                    </div>
-                    
-                    @if($this->discount > 0)
-                    <div class="flex justify-between items-center mb-2 text-brand-accent">
-                        <span class="text-xs uppercase tracking-wider">Bulk Discount</span>
-                        <span class="font-mono">-${{ number_format($this->discount, 2) }}</span>
-                    </div>
+                    @if($this->tieredPricingActive && $this->discount > 0)
+                        <div class="space-y-2 mb-4 pb-4 border-b border-black/10">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Subtotal</span>
+                                <span class="font-mono">${{ number_format($this->total, 2) }}</span>
+                            </div>
+                            <div class="flex justify-between text-sm text-brand-accent">
+                                <span>Bulk Discount</span>
+                                <span class="font-mono">-${{ number_format($this->discount, 2) }}</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="text-xl font-bold">Total</span>
+                            <span class="text-2xl font-black font-mono">${{ number_format($this->tieredTotal, 2) }}</span>
+                        </div>
+                    @else
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="text-xl font-bold">Total</span>
+                            <span class="text-2xl font-black font-mono">${{ number_format($this->total, 2) }}</span>
+                        </div>
                     @endif
 
-                    <div class="flex justify-between items-center mb-8 text-xl font-bold">
-                        <span>Total</span>
-                        <span class="font-mono">${{ number_format($this->tieredTotal, 2) }}</span>
-                    </div>
-
-                    <a href="{{ route('checkout') }}" class="block w-full bg-white text-black text-center font-bold py-4 rounded-xl hover:scale-[1.02] transition-transform mb-3">
+                    <a href="{{ route('checkout') }}" class="block w-full bg-brand-black text-white text-center font-bold py-4 rounded-xl hover:scale-[1.02] transition-transform mb-3">
                         CHECKOUT
                     </a>
                     
@@ -83,6 +82,7 @@
                 </div>
             </div>
         </div>
+
     @else
         <div class="flex flex-col items-center justify-center h-[60vh] text-center">
             <div class="bg-white/5 p-8 rounded-full mb-6 animate-pulse">

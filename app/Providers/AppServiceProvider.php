@@ -31,6 +31,11 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Support\Facades\Schema::defaultStringLength(191);
         
+        // Register Blade directive for plugin checks
+        \Illuminate\Support\Facades\Blade::if('plugin', function ($key) {
+            return app(\App\Services\PluginManager::class)->isActive($key);
+        });
+        
         // if($this->app->environment('production') || $this->app->environment('staging')) {
         //     \Illuminate\Support\Facades\URL::forceScheme('https');
         // }
