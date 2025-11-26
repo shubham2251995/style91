@@ -138,6 +138,7 @@ Route::get('/ambassador/dashboard', \App\Livewire\Influencer\Dashboard::class)->
 // The Style Club (Membership)
 Route::get('/club', \App\Livewire\Membership\Dashboard::class)->name('club.dashboard')->middleware('auth');
 
+// Admin Panel Routes
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', AdminDashboard::class)->name('dashboard');
     Route::get('/plugins', AdminPluginManager::class)->name('plugins');
