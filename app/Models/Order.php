@@ -45,4 +45,23 @@ class Order extends Model
     {
         return $this->belongsTo(Influencer::class);
     }
+
+    public function transaction()
+    {
+        return $this->hasOne(Transaction::class);
+    }
+
+    public function isEligibleForReturn()
+    {
+        // Order must be delivered
+        if ($this->status !== 'delivered') {
+            return false;
+        }
+
+        // Must be within 30 days of delivery
+        $deliveryDate = $this->delivered_at ?? $this->updated_at;
+        $daysSinceDelivery = now()->diffInDays($deliveryDate);
+
+        return $daysSinceDelivery <= 30;
+    }
 }

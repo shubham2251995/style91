@@ -60,6 +60,16 @@ class User extends Authenticatable
         return $this->belongsTo(MembershipTier::class);
     }
 
+    public function loyaltyPoints()
+    {
+        return $this->hasMany(LoyaltyPoint::class);
+    }
+
+    public function getLoyaltyBalanceAttribute()
+    {
+        return $this->loyaltyPoints()->sum('points');
+    }
+
     // SEO Methods
     public function getSeoTitle()
     {

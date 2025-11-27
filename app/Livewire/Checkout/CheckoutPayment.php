@@ -153,7 +153,7 @@ class CheckoutPayment extends Component
 
         session()->forget(['pending_order', 'cart']);
         
-        return redirect()->route('order.confirmation', ['order' => $transaction->order->id]);
+        return redirect()->route('account.order', ['orderId' => $transaction->order->id]);
     }
 
     public function handlePaymentSuccess($paymentData)
@@ -170,7 +170,7 @@ class CheckoutPayment extends Component
 
             session()->forget(['pending_order', 'cart']);
             
-            return redirect()->route('order.confirmation', ['order' => $transaction->order->id]);
+            return redirect()->route('account.order', ['orderId' => $transaction->order->id]);
         }
     }
 

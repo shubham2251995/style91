@@ -187,12 +187,12 @@ class CheckoutAddress extends Component
         ]]);
 
         $this->dispatch('goToPayment');
+        return redirect()->route('checkout.payment');
     }
 
     private function getCartTotal()
     {
-        // This should get the actual cart total from your cart system
-        return session('cart_total', 0);
+        return app(\App\Services\CartService::class)->total();
     }
 
     public function render()

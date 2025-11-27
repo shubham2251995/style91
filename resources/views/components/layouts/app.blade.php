@@ -58,18 +58,6 @@
     <meta name="keywords" content="{{ $metaKeywords }}">
     
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="{{ $ogType }}">
-    <meta property="og:url" content="{{ $ogUrl }}">
-    <meta property="og:title" content="{{ $metaTitle }}">
-    <meta property="og:description" content="{{ $metaDescription }}">
-    <meta property="og:image" content="{{ $ogImage }}">
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="{{ $ogUrl }}">
-    <meta property="twitter:title" content="{{ $metaTitle }}">
-    <meta property="twitter:description" content="{{ $metaDescription }}">
-    <meta property="twitter:image" content="{{ $ogImage }}">
     
     @if($seoSchema)
     <script type="application/ld+json">

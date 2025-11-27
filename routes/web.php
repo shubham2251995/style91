@@ -45,12 +45,15 @@ Route::get('/sale', \App\Livewire\SalePage::class)->name('sale');
 Route::get('/size-guide', \App\Livewire\SizeGuide::class)->name('size-guide');
 Route::get('/product/{slug}', ProductShow::class)->name('product');
 Route::get('/cart', Cart::class)->name('cart');
-Route::get('/checkout', Checkout::class)->name('checkout');
+Route::get('/checkout', function() {
+    return redirect()->route('checkout.address');
+})->name('checkout');
 Route::get('/flex/{orderId}', FlexCard::class)->name('flex');
 Route::get('/wardrobe', WardrobeIndex::class)->name('wardrobe')->middleware('auth');
 Route::get('/wishlist', \App\Livewire\WishlistIndex::class)->name('wishlist')->middleware('auth');
 Route::get('/account', \App\Livewire\CustomerDashboard::class)->name('account')->middleware('auth');
 Route::get('/account/orders/{orderId}', \App\Livewire\OrderDetails::class)->name('account.order')->middleware('auth');
+Route::get('/account/orders/{orderId}/return', \App\Livewire\ReturnRequestPage::class)->name('account.order.return')->middleware('auth');
 Route::get('/gift-cards', \App\Livewire\GiftCardPurchase::class)->name('gift-cards.purchase');
 Route::get('/track-order', \App\Livewire\OrderTracking::class)->name('track-order');
 Route::get('/mystery-boxes', MysteryBoxIndex::class)->name('mystery-box.index');
@@ -199,6 +202,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/analytics', \App\Livewire\Admin\SalesDashboard::class)->name('sales-dashboard');
     Route::get('/reports', \App\Livewire\Admin\ReportManager::class)->name('report-manager');
     Route::get('/sections', \App\Livewire\Admin\SectionManager::class)->name('section-manager');
+    Route::get('/stock-adjustments', \App\Livewire\Admin\StockAdjustmentManager::class)->name('stock-adjustments');
 });
 
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index']);

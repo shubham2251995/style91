@@ -114,4 +114,9 @@ class Product extends Model
     {
         return $this->flashSales()->first();
     }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
 }

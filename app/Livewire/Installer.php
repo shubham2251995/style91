@@ -214,9 +214,8 @@ class Installer extends Component
             auth()->login($admin);
             session()->regenerate();
 
-            // Finalize - Exec-Free Methods
-            $this->createStorageLink();
-            $this->manualCacheClear();
+            // Post-Installation Tasks for Shared Hosting
+            $this->runPostInstallationTasks();
             
             $this->updateEnv([
                 'APP_ENV' => 'production',
@@ -234,26 +233,40 @@ class Installer extends Component
 
     /**
      * Create storage symlink without using exec/shell commands
-     * If symlink() is disabled, we silently skip (not critical for installation)
+     * Shared hosting compatible - tries symlink, falls back to manual copy
      */
     protected function createStorageLink()
     {
-        // Storage linking is optional - if it fails, the app still works
         try {
             $target = storage_path('app/public');
             $link = public_path('storage');
 
             // Remove existing link if it exists
-            if (file_exists($link) && is_link($link)) {
-                @unlink($link);
+            if (file_exists($link)) {
+                if (is_link($link)) {
+                    @unlink($link);
+                } elseif (is_dir($link)) {
+                    // Already exists as directory, skip
+                    return;
+                }
             }
 
-            // Try to create symlink - will fail silently if function is disabled
-            if (function_exists('symlink')) {
+            // Try symlink first (works on most shared hosting)
+            if (function_exists('symlink') && !function_exists('is_disabled') && !in_array('symlink', explode(',', ini_get('disable_functions')))) {
                 @symlink($target, $link);
+            } else {
+                // Fallback: Create info file for manual setup
+                $infoFile = public_path('STORAGE_LINK_NEEDED.txt');
+                file_put_contents($infoFile, 
+                    "Symlink function is disabled on your server.\n\n" .
+                    "Please create a symbolic link manually:\n" .
+                    "Source: " . $target . "\n" .
+                    "Destination: " . $link . "\n\n" .
+                    "Contact your hosting support or use File Manager to create symlink."
+                );
             }
         } catch (\Exception $e) {
-            // Silently fail - storage linking is not critical
+            // Silently fail - not critical for initial installation
         }
     }
 
@@ -328,6 +341,102 @@ class Installer extends Component
         // Force config reload
         if (function_exists('opcache_reset')) {
             @opcache_reset();
+        }
+    }
+
+    /**
+     * Post-installation tasks for shared hosting
+     * Optimizes the application for production use
+     */
+    protected function runPostInstallationTasks()
+    {
+        // 1. Create storage link
+        $this->createStorageLink();
+        
+        // 2. Clear all caches
+        $this->manualCacheClear();
+        
+        // 3. Generate optimized caches for production
+        $this->generateProductionCaches();
+        
+        // 4. Check and create required directories
+        $this->ensureDirectoriesExist();
+        
+        // 5. Set proper file permissions (info only, actual changing may fail)
+        $this->checkFilePermissions();
+    }
+
+    /**
+     * Generate production caches (config, routes, views)
+     */
+    protected function generateProductionCaches()
+    {
+        try {
+            // Generate config cache
+            Artisan::call('config:cache');
+            
+            // Generate route cache
+            Artisan::call('route:cache');
+            
+            // Note: view cache is generated automatically on first access
+        } catch (\Exception $e) {
+            // If caching fails, just log it - not critical
+            \Log::warning('Could not generate production caches: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Ensure all required directories exist with proper structure
+     */
+    protected function ensureDirectoriesExist()
+    {
+        $directories = [
+            storage_path('app/public'),
+            storage_path('app/public/products'),
+            storage_path('app/public/uploads'),
+            storage_path('framework/cache'),
+            storage_path('framework/sessions'),
+            storage_path('framework/views'),
+            storage_path('logs'),
+            public_path('storage'),
+        ];
+
+        foreach ($directories as $dir) {
+            if (!is_dir($dir)) {
+                @mkdir($dir, 0755, true);
+            }
+        }
+    }
+
+    /**
+     * Check file permissions and create info file if issues found
+     */
+    protected function checkFilePermissions()
+    {
+        $checks = [
+            'storage' => is_writable(storage_path()),
+            'bootstrap_cache' => is_writable(base_path('bootstrap/cache')),
+            'public' => is_writable(public_path()),
+        ];
+
+        $hasIssues = in_array(false, $checks);
+        
+        if ($hasIssues) {
+            $message = "Some directories need write permissions:\n\n";
+            
+            if (!$checks['storage']) {
+                $message .= "- storage/ (755 or 775)\n";
+            }
+            if (!$checks['bootstrap_cache']) {
+                $message .= "- bootstrap/cache/ (755 or 775)\n";
+            }
+            if (!$checks['public']) {
+                $message .= "- public/ (755)\n";
+            }
+            
+            $message .= "\nPlease set these permissions via File Manager or contact hosting support.";
+            
+            @file_put_contents(base_path('PERMISSIONS_REQUIRED.txt'), $message);
         }
     }
 
