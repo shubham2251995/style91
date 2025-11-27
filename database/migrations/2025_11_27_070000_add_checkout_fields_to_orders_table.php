@@ -22,10 +22,16 @@ return new class extends Migration
             });
         }
 
-        // 2. Add new columns
+        // 2. Add new columns in correct order
         Schema::table('orders', function (Blueprint $table) {
+            // First add shipping_phone (it's referenced by other columns)
+            if (!Schema::hasColumn('orders', 'shipping_phone')) {
+                $table->string('shipping_phone')->nullable()->after('shipping_address');
+            }
+            
+            // Now add columns that reference shipping_phone
             if (!Schema::hasColumn('orders', 'shipping_cost')) {
-                $table->decimal('shipping_cost', 10, 2)->default(0)->after('shipping_phone'); // Note: shipping_phone might not exist if table was just created above
+                $table->decimal('shipping_cost', 10, 2)->default(0)->after('shipping_phone');
             }
             if (!Schema::hasColumn('orders', 'shipping_method')) {
                 $table->string('shipping_method')->nullable()->after('shipping_cost');
@@ -37,15 +43,9 @@ return new class extends Migration
                 $table->string('payment_id')->nullable()->after('payment_status');
             }
             
-            // Also ensure shipping_phone exists (it was in the fillable but maybe not in original schema?)
-            // Checking original schema: it did NOT have shipping_phone.
-            if (!Schema::hasColumn('orders', 'shipping_phone')) {
-                $table->string('shipping_phone')->nullable()->after('shipping_address');
-            }
-            
             // Ensure other fields from Order model fillable are present
              if (!Schema::hasColumn('orders', 'total_amount')) {
-                $table->decimal('total_amount', 10, 2)->nullable()->after('total'); // Redundant with total?
+                $table->decimal('total_amount', 10, 2)->nullable()->after('total');
             }
              if (!Schema::hasColumn('orders', 'discount_amount')) {
                 $table->decimal('discount_amount', 10, 2)->default(0)->after('total_amount');

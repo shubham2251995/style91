@@ -15,6 +15,11 @@ return new class extends Migration
         });
 
         Schema::table('orders', function (Blueprint $table) {
+            // Ensure discount_amount exists first
+            if (!Schema::hasColumn('orders', 'discount_amount')) {
+                $table->decimal('discount_amount', 10, 2)->default(0)->after('total');
+            }
+            
             if (!Schema::hasColumn('orders', 'coupon_discount')) {
                 $table->decimal('coupon_discount', 10, 2)->default(0)->after('discount_amount');
             }
