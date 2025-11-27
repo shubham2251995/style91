@@ -36,9 +36,9 @@ use App\Livewire\Editorial\Index as EditorialIndex;
 use App\Livewire\Editorial\Show as EditorialShow;
 
 Route::get('/', Home::class)->name('home');
-Route::get('/wishlist', \App\Livewire\WishlistPage::class)->middleware('auth')->name('wishlist');
 Route::get('/checkout/address', \App\Livewire\Checkout\CheckoutAddress::class)->name('checkout.address');
 Route::get('/checkout/payment', \App\Livewire\Checkout\CheckoutPayment::class)->name('checkout.payment');
+Route::any('/payment/callback', [App\Http\Controllers\PaymentController::class, 'callback'])->name('payment.callback');
 Route::get('/search', \App\Livewire\ProductSearch::class)->name('search');
 Route::get('/new-arrivals', \App\Livewire\NewArrivals::class)->name('new-arrivals');
 Route::get('/sale', \App\Livewire\SalePage::class)->name('sale');

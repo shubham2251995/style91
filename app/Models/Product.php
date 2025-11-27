@@ -101,4 +101,17 @@ class Product extends Model
     {
         return $this->reviews()->approved()->count();
     }
+
+    public function flashSales()
+    {
+        return $this->belongsToMany(FlashSale::class, 'flash_sale_product')
+            ->withPivot('discount_percentage', 'fixed_price')
+            ->where('end_time', '>', now())
+            ->where('start_time', '<=', now());
+    }
+
+    public function getActiveFlashSaleAttribute()
+    {
+        return $this->flashSales()->first();
+    }
 }

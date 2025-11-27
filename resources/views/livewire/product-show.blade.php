@@ -59,7 +59,11 @@
         <div class="flex flex-col md:flex-row justify-between items-start mb-8 gap-4">
             <div>
                 <div class="flex items-center gap-2 mb-2">
-                    <span class="px-2 py-0.5 bg-brand-accent text-brand-black text-[10px] font-bold uppercase tracking-wider rounded-sm">New Arrival</span>
+                    @if($product->activeFlashSale)
+                        <span class="px-2 py-0.5 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-sm animate-pulse">Flash Sale Ends in {{ $product->activeFlashSale->end_time->diffForHumans() }}</span>
+                    @else
+                        <span class="px-2 py-0.5 bg-brand-accent text-brand-black text-[10px] font-bold uppercase tracking-wider rounded-sm">New Arrival</span>
+                    @endif
                     <p class="text-brand-gray/60 font-mono text-xs uppercase tracking-widest">Drop #001</p>
                 </div>
                 <h1 class="text-3xl md:text-5xl font-black tracking-tight text-brand-black leading-none mb-2">{{ $product->name }}</h1>
@@ -68,8 +72,13 @@
             <!-- Price Block -->
             <div class="flex flex-col items-end">
                 <div class="flex items-baseline gap-2">
-                    <p class="text-3xl md:text-4xl font-black text-brand-black">₹{{ number_format($variantPrice * 80) }}</p>
-                    <span class="text-lg text-gray-400 line-through font-medium">₹{{ number_format(($variantPrice * 80) + 499) }}</span>
+                    @if($product->activeFlashSale)
+                        <p class="text-3xl md:text-4xl font-black text-red-600">₹{{ number_format($product->activeFlashSale->pivot->fixed_price ?? ($variantPrice * 80 * (1 - $product->activeFlashSale->pivot->discount_percentage/100))) }}</p>
+                        <span class="text-lg text-gray-400 line-through font-medium">₹{{ number_format($variantPrice * 80) }}</span>
+                    @else
+                        <p class="text-3xl md:text-4xl font-black text-brand-black">₹{{ number_format($variantPrice * 80) }}</p>
+                        <span class="text-lg text-gray-400 line-through font-medium">₹{{ number_format(($variantPrice * 80) + 499) }}</span>
+                    @endif
                 </div>
                 <a href="{{ route('size-guide') }}" class="text-xs font-bold text-brand-accent hover:text-brand-black uppercase tracking-wider flex items-center gap-1 mt-1">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
