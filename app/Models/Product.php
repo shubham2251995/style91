@@ -15,6 +15,7 @@ class Product extends Model
         'stock_quantity',
         'category_id',
         'category', // Keep for backward compatibility during migration
+        'gender',
     ];
 
     public function getRouteKeyName()

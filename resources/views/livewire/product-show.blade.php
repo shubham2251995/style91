@@ -230,7 +230,7 @@
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-gray-50 p-4 rounded-xl">
                     <h4 class="font-bold text-black mb-1 text-xs uppercase tracking-wider">Category</h4>
-                    <p class="text-sm font-medium">{{ $product->category }}</p>
+                    <p class="text-sm font-medium">{{ $product->category->name ?? $product->category }}</p>
                 </div>
                 <div class="bg-gray-50 p-4 rounded-xl">
                     <h4 class="font-bold text-black mb-1 text-xs uppercase tracking-wider">Material</h4>

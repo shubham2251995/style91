@@ -14,7 +14,7 @@ class CartService
 
     public function add($productId, $quantity = 1, $variantId = null)
     {
-        try {
+            Log::info("Adding product to cart", ['productId' => $productId, 'variantId' => $variantId]);
             $cart = $this->get();
             $cartKey = $productId . ($variantId ? '_' . $variantId : '');
 
@@ -58,8 +58,10 @@ class CartService
             }
 
             Session::put(self::SESSION_KEY, $cart);
+            Log::info("Cart updated successfully", ['count' => count($cart)]);
         } catch (\Exception $e) {
             Log::error('Error adding product to cart: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
         }
     }
 

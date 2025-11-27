@@ -171,6 +171,13 @@
                     {{ $siteName }}<span class="text-brand-accent">.</span>
                 </a>
             </div>
+
+            <!-- Gender Toggle (Desktop) -->
+            <div class="hidden md:flex items-center gap-4 ml-8">
+                <a href="{{ route('search', ['gender' => 'Men']) }}" class="text-sm font-bold uppercase tracking-wider {{ request('gender') == 'Men' ? 'text-brand-black border-b-2 border-brand-accent' : 'text-gray-500 hover:text-brand-black' }}">Men</a>
+                <span class="text-gray-300">|</span>
+                <a href="{{ route('search', ['gender' => 'Women']) }}" class="text-sm font-bold uppercase tracking-wider {{ request('gender') == 'Women' ? 'text-brand-black border-b-2 border-brand-accent' : 'text-gray-500 hover:text-brand-black' }}">Women</a>
+            </div>
             
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center gap-8">

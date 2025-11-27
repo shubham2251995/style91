@@ -65,21 +65,45 @@ Route::get('/tv/{slug}', TVShow::class)->name('tv.show');
 Route::get('/editorial', EditorialIndex::class)->name('editorial.index');
 Route::get('/editorial/{slug}', EditorialShow::class)->name('editorial.show');
 
-Route::get('/fit-check', \App\Livewire\FitCheck\Gallery::class)->name('fit-check.gallery');
-Route::get('/fit-check/upload', \App\Livewire\FitCheck\Upload::class)->name('fit-check.upload')->middleware('auth');
+// Plugin Routes
+Route::middleware(['web'])->group(function () {
+    // AI Stylist
+    Route::get('/stylist', App\Livewire\AiStylist::class)->name('plugin.stylist');
+    
+    // Fit Check
+    Route::get('/fit-check', App\Livewire\FitCheck\Gallery::class)->name('plugin.fit-check');
+    Route::get('/fit-check/upload', App\Livewire\FitCheck\Upload::class)->name('plugin.fit-check.upload');
+    
+    // Mystery Box
+    Route::get('/mystery-box', App\Livewire\MysteryBox\Index::class)->name('plugin.mystery-box');
+    
+    // Raffles
+    Route::get('/raffle', App\Livewire\Raffle\Index::class)->name('plugin.raffle');
+    
+    // Streetwear TV
+    Route::get('/tv', App\Livewire\StreetwearTV\Index::class)->name('plugin.streetwear-tv');
+    
+    // Lookbook
+    Route::get('/lookbook', App\Livewire\Lookbook\Index::class)->name('plugin.lookbook');
+    
+    // Vote to Make
+    Route::get('/vote', App\Livewire\VoteToMake::class)->name('plugin.vote');
+    
+    // Resell Market
+    Route::get('/resell', App\Livewire\ResellMarket::class)->name('plugin.resell');
+    
+    // Social Unlock
+    Route::get('/social-unlock', App\Livewire\SocialUnlock::class)->name('plugin.social-unlock');
+});
 
-Route::get('/lookbook', \App\Livewire\Lookbook\Index::class)->name('lookbook.index');
 Route::get('/swipe', \App\Livewire\SwipeToCop::class)->name('swipe');
-Route::get('/stylist', \App\Livewire\AiStylist::class)->name('stylist');
 Route::get('/vault', \App\Livewire\TheVault::class)->name('vault');
 
 Route::get('/remix', \App\Livewire\RemixStudio::class)->name('remix');
 Route::get('/radar', \App\Livewire\DropRadar::class)->name('radar');
-Route::get('/resell', \App\Livewire\ResellMarket::class)->name('resell');
 
 // Future Tech (Public)
 Route::get('/token-gate', \App\Livewire\TokenGate::class)->name('token-gate');
-Route::get('/vote', \App\Livewire\VoteToMake::class)->name('vote');
 Route::get('/mirror', \App\Livewire\MagicMirror::class)->name('magic-mirror');
 Route::get('/customizer', \App\Livewire\Customizer::class)->name('customizer');
 

@@ -15,6 +15,7 @@ class ProductSearch extends Component
     use WithPagination;
 
     public $search = '';
+    public $gender = '';
     public $category = '';
     public $tags = [];
     public $minPrice = 0;
@@ -126,6 +127,11 @@ class ProductSearch extends Component
                 $q->where('name', 'like', '%' . $this->search . '%')
                   ->orWhere('description', 'like', '%' . $this->search . '%');
             });
+        }
+
+        // Gender filter
+        if ($this->gender) {
+            $query->where('gender', $this->gender);
         }
 
         // Category filter

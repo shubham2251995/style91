@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Plugin;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class PluginManager
 {
@@ -88,24 +89,21 @@ class PluginManager
         try {
             // Sync with DB
             foreach ($defaults as $key => $data) {
-                if (!\Illuminate\Support\Facades\DB::table('plugins')->where('key', $key)->exists()) {
-                    \Illuminate\Support\Facades\DB::table('plugins')->insert([
-                        'key' => $key,
+                Plugin::firstOrCreate(
+                    ['key' => $key],
+                    [
                         'group' => $data['group'],
                         'name' => $data['name'],
-                        'active' => false,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
+                        'active' => false
+                    ]
+                );
             }
 
             // Load from DB
-            $this->plugins = \Illuminate\Support\Facades\DB::table('plugins')
-                ->get()
+            $this->plugins = Plugin::all()
                 ->keyBy('key')
                 ->map(function ($item) {
-                    return (array) $item;
+                    return $item->toArray();
                 })
                 ->toArray();
         } catch (\Exception $e) {
@@ -124,14 +122,20 @@ class PluginManager
 
     public function activate($key)
     {
-        \Illuminate\Support\Facades\DB::table('plugins')->where('key', $key)->update(['active' => true]);
-        $this->plugins[$key]['active'] = true;
+        $plugin = Plugin::where('key', $key)->first();
+        if ($plugin) {
+            $plugin->update(['active' => true]);
+            $this->plugins[$key]['active'] = true;
+        }
     }
 
     public function deactivate($key)
     {
-        \Illuminate\Support\Facades\DB::table('plugins')->where('key', $key)->update(['active' => false]);
-        $this->plugins[$key]['active'] = false;
+        $plugin = Plugin::where('key', $key)->first();
+        if ($plugin) {
+            $plugin->update(['active' => false]);
+            $this->plugins[$key]['active'] = false;
+        }
     }
 
     public function getAll()
