@@ -3,142 +3,130 @@
 namespace App\Livewire\Admin;
 
 use Livewire\Component;
-use App\Models\Section;
-use Illuminate\Support\Facades\Log;
+use App\Models\HomepageSection;
+use Livewire\WithFileUploads;
 
 class SectionManager extends Component
 {
-    public $sections = [];
-    public $showModal = false;
-    public $editingSection = null;
-    
+    use WithFileUploads;
+
+    public $sections;
+    public $editingSectionId = null;
+
     // Form fields
     public $type = 'hero';
-    public $title = '';
-    public $content = [];
+    public $title;
+    public $subtitle;
+    public $content;
+    public $image_url;
+    public $link_url;
+    public $link_text;
     public $order = 0;
     public $is_active = true;
-    public $rules = [];
-
-    public $sectionTypes = [
-        'hero' => 'Hero/Slider',
-        'categories' => 'Categories Grid',
-        'featured_products' => 'Featured Products',
-        'banner' => 'Banner',
-        'text_block' => 'Text Block',
-        'video' => 'Video',
-        'testimonials' => 'Testimonials',
-        'custom_html' => 'Custom HTML',
-    ];
+    public $newImage;
 
     public function mount()
     {
-        $this->loadSections();
+        $this->refreshSections();
     }
 
-    public function loadSections()
+    public function refreshSections()
     {
-        try {
-            $this->sections = Section::ordered()->get()->toArray();
-        } catch (\Exception $e) {
-            Log::error('Error loading homepage sections: ' . $e->getMessage());
-            $this->sections = [];
-        }
+        $this->sections = HomepageSection::orderBy('order')->get();
     }
 
-    public function openModal($type = 'hero')
+    public function create()
     {
-        $this->reset(['type', 'title', 'content', 'order', 'is_active', 'rules', 'editingSection']);
-        $this->type = $type;
-        $this->order = count($this->sections);
-        $this->showModal = true;
+        $this->resetForm();
+        $this->editingSectionId = null;
     }
 
     public function edit($id)
     {
-        try {
-            $section = Section::findOrFail($id);
-            $this->editingSection = $section->id;
-            $this->type = $section->type;
-            $this->title = $section->title;
-            $this->content = $section->content ?? [];
-            $this->order = $section->order;
-            $this->is_active = $section->is_active;
-            $this->rules = $section->rules ?? [];
-            $this->showModal = true;
-        } catch (\Exception $e) {
-            session()->flash('error', 'Section not found.');
-        }
+        $section = HomepageSection::find($id);
+        $this->editingSectionId = $section->id;
+        $this->type = $section->type;
+        $this->title = $section->title;
+        $this->subtitle = $section->subtitle;
+        $this->content = $section->content;
+        $this->image_url = $section->image_url;
+        $this->link_url = $section->link_url;
+        $this->link_text = $section->link_text;
+        $this->order = $section->order;
+        $this->is_active = $section->is_active;
     }
 
     public function save()
     {
-        try {
-            $data = [
-                'type' => $this->type,
-                'title' => $this->title,
-                'content' => $this->content,
-                'order' => $this->order,
-                'is_active' => $this->is_active,
-                'rules' => $this->rules,
-            ];
+        $this->validate([
+            'title' => 'required|string|max:255',
+            'type' => 'required|string',
+            'order' => 'integer',
+        ]);
 
-            if ($this->editingSection) {
-                Section::find($this->editingSection)->update($data);
-                session()->flash('message', 'Section updated successfully.');
-            } else {
-                Section::create($data);
-                session()->flash('message', 'Section created successfully.');
-            }
+        $data = [
+            'type' => $this->type,
+            'title' => $this->title,
+            'subtitle' => $this->subtitle,
+            'content' => $this->content,
+            'link_url' => $this->link_url,
+            'link_text' => $this->link_text,
+            'order' => $this->order,
+            'is_active' => $this->is_active,
+        ];
 
-            $this->closeModal();
-            $this->loadSections();
-        } catch (\Exception $e) {
-            Log::error('Error saving section: ' . $e->getMessage());
-            session()->flash('error', 'Failed to save section.');
+        if ($this->newImage) {
+            $path = $this->newImage->store('sections', 'public');
+            $data['image_url'] = '/storage/' . $path;
+        } elseif (!$this->editingSectionId && !$this->image_url) {
+             // Default placeholder if creating new and no image
+             $data['image_url'] = '/images/placeholder.jpg';
         }
+
+        if ($this->editingSectionId) {
+            HomepageSection::find($this->editingSectionId)->update($data);
+        } else {
+            HomepageSection::create($data);
+        }
+
+        $this->resetForm();
+        $this->refreshSections();
     }
 
     public function delete($id)
     {
-        try {
-            Section::destroy($id);
-            session()->flash('message', 'Section deleted successfully.');
-            $this->loadSections();
-        } catch (\Exception $e) {
-            Log::error('Error deleting section: ' . $e->getMessage());
-            session()->flash('error', 'Failed to delete section.');
-        }
+        HomepageSection::find($id)->delete();
+        $this->refreshSections();
     }
 
     public function toggleActive($id)
     {
-        try {
-            $section = Section::find($id);
-            $section->is_active = !$section->is_active;
-            $section->save();
-            $this->loadSections();
-        } catch (\Exception $e) {
-            Log::error('Error toggling section: ' . $e->getMessage());
+        $section = HomepageSection::find($id);
+        $section->update(['is_active' => !$section->is_active]);
+        $this->refreshSections();
+    }
+    
+    public function updateOrder($list)
+    {
+        foreach ($list as $item) {
+            HomepageSection::find($item['value'])->update(['order' => $item['order']]);
         }
+        $this->refreshSections();
     }
 
-    public function updateOrder($newOrder)
+    public function resetForm()
     {
-        try {
-            foreach ($newOrder as $index => $id) {
-                Section::where('id', $id)->update(['order' => $index]);
-            }
-            $this->loadSections();
-        } catch (\Exception $e) {
-            Log::error('Error updating section order: ' . $e->getMessage());
-        }
-    }
-
-    public function closeModal()
-    {
-        $this->showModal = false;
-        $this->reset(['type', 'title', 'content', 'order', 'is_active', 'rules', 'editingSection']);
+        $this->editingSectionId = null;
+        $this->type = 'hero';
+        $this->title = '';
+        $this->subtitle = '';
+        $this->content = '';
+        $this->image_url = '';
+        $this->link_url = '';
+        $this->link_text = '';
+        $this->order = 0;
+        $this->is_active = true;
+        $this->newImage = null;
     }
 
     public function render()

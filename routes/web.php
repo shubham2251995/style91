@@ -227,6 +227,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/analytics', \App\Livewire\Admin\SalesDashboard::class)->name('sales-dashboard');
     Route::get('/reports', \App\Livewire\Admin\ReportManager::class)->name('report-manager');
     Route::get('/sections', \App\Livewire\Admin\SectionManager::class)->name('section-manager');
+    Route::get('/menus', \App\Livewire\Admin\MenuManager::class)->name('menu-manager');
     Route::get('/stock-adjustments', \App\Livewire\Admin\StockAdjustmentManager::class)->name('stock-adjustments');
 });
 

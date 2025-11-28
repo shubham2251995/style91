@@ -11,9 +11,23 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // Register Plugin Manager
         $this->app->singleton(\App\Services\PluginManager::class, function ($app) {
             return new \App\Services\PluginManager();
         });
+
+        // Share Menus
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('menus')) {
+                \Illuminate\Support\Facades\View::composer(['components.layouts.app', 'components.layouts.footer'], function ($view) {
+                    $view->with('headerMenu', \App\Models\Menu::where('location', 'header')->with('items.children')->first());
+                    $view->with('footerMenu1', \App\Models\Menu::where('location', 'footer_1')->with('items')->first());
+                    $view->with('footerMenu2', \App\Models\Menu::where('location', 'footer_2')->with('items')->first());
+                });
+            }
+        } catch (\Exception $e) {
+            // Log or ignore if DB not ready
+        }
 
         $this->app->singleton(\App\Services\CartService::class, function ($app) {
             return new \App\Services\CartService();
