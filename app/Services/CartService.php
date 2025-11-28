@@ -14,6 +14,7 @@ class CartService
 
     public function add($productId, $quantity = 1, $variantId = null)
     {
+        try {
             Log::info("Adding product to cart", ['productId' => $productId, 'variantId' => $variantId]);
             $cart = $this->get();
             $cartKey = $productId . ($variantId ? '_' . $variantId : '');

@@ -18,6 +18,8 @@ class ProductSearch extends Component
     public $gender = '';
     public $category = '';
     public $tags = [];
+    public $selectedSizes = [];
+    public $selectedColors = [];
     public $minPrice = 0;
     public $maxPrice = 10000;
     public $sortBy = 'latest';
@@ -139,10 +141,18 @@ class ProductSearch extends Component
             $query->where('category_id', $this->category);
         }
 
-        // Tags filter
-        if (!empty($this->tags)) {
-            $query->whereHas('tags', function($q) {
-                $q->whereIn('tags.id', $this->tags);
+        // Variant filter (Size & Color)
+        if (!empty($this->selectedSizes)) {
+            $query->whereHas('variants', function($q) {
+                $q->where('is_active', true)
+                  ->whereJsonContains('options->size', $this->selectedSizes);
+            });
+        }
+
+        if (!empty($this->selectedColors)) {
+            $query->whereHas('variants', function($q) {
+                $q->where('is_active', true)
+                  ->whereJsonContains('options->color', $this->selectedColors);
             });
         }
 
@@ -208,11 +218,30 @@ class ProductSearch extends Component
             // Table might not exist yet
         }
 
+        // Fetch Facets (Sizes & Colors)
+        $availableSizes = \App\Models\ProductVariant::active()
+            ->selectRaw("json_unquote(json_extract(options, '$.size')) as size")
+            ->distinct()
+            ->whereNotNull(DB::raw("json_extract(options, '$.size')"))
+            ->pluck('size')
+            ->sort()
+            ->values();
+
+        $availableColors = \App\Models\ProductVariant::active()
+            ->selectRaw("json_unquote(json_extract(options, '$.color')) as color")
+            ->distinct()
+            ->whereNotNull(DB::raw("json_extract(options, '$.color')"))
+            ->pluck('color')
+            ->sort()
+            ->values();
+
         return view('livewire.product-search', [
             'products' => $products,
             'categories' => $categories,
             'allTags' => $allTags,
             'trendingSearches' => $trendingSearches,
+            'availableSizes' => $availableSizes,
+            'availableColors' => $availableColors,
         ]);
     }
 }

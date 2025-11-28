@@ -1,6 +1,21 @@
 <div class="min-h-screen bg-brand-black text-white p-6 pb-24">
     <h1 class="text-3xl font-bold tracking-tighter mb-8">YOUR <br> <span class="text-brand-accent">STASH</span></h1>
 
+    <!-- Free Shipping Progress -->
+    @if(count($this->cartItems) > 0)
+        <div class="mb-8 bg-white/5 rounded-xl p-4 border border-white/10">
+            @if($this->amountLeftForFreeShipping > 0)
+                <p class="text-sm text-gray-300 mb-2">Add <span class="text-brand-accent font-bold">₹{{ number_format($this->amountLeftForFreeShipping, 2) }}</span> more for <span class="font-bold text-white">FREE SHIPPING</span></p>
+            @else
+                <p class="text-sm text-brand-accent font-bold mb-2">🎉 YOU'VE UNLOCKED FREE SHIPPING!</p>
+            @endif
+            
+            <div class="w-full bg-gray-700 rounded-full h-2.5 overflow-hidden">
+                <div class="bg-brand-accent h-2.5 rounded-full transition-all duration-500 ease-out" style="width: {{ $this->freeShippingProgress }}%"></div>
+            </div>
+        </div>
+    @endif
+
     @if(count($this->cartItems) > 0)
         <div class="space-y-4">
             @foreach($this->cartItems as $item)

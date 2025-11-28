@@ -250,6 +250,27 @@
         </button>
     </div>
 
+    <!-- Complete the Look (AI Stylist) -->
+    @if(count($completeTheLookProducts) > 0)
+    <div class="mt-16">
+        <h3 class="text-2xl font-black uppercase tracking-tighter mb-6">Complete the Look</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            @foreach($completeTheLookProducts as $lookItem)
+                <a href="{{ route('product', $lookItem->slug) }}" class="group">
+                    <div class="aspect-[3/4] bg-gray-100 rounded-xl overflow-hidden mb-3 relative">
+                        @if($lookItem->image_url)
+                            <img src="{{ $lookItem->image_url }}" alt="{{ $lookItem->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        @endif
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+                    </div>
+                    <h4 class="font-bold text-sm uppercase tracking-wide truncate">{{ $lookItem->name }}</h4>
+                    <p class="text-sm text-gray-500">₹{{ number_format($lookItem->price, 2) }}</p>
+                </a>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     <!-- Reviews Section -->
     <div class="px-6 pb-24 max-w-7xl mx-auto">
         <livewire:review-form :productId="$product->id" />

@@ -169,6 +169,7 @@ Route::get('/club', \App\Livewire\Membership\Dashboard::class)->name('club.dashb
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', AdminDashboard::class)->name('dashboard');
     Route::get('/plugins', AdminPluginManager::class)->name('plugins');
+    Route::get('/plugins/{key}/edit', \App\Livewire\Admin\PluginEditor::class)->name('admin.plugin.edit');
     Route::get('/god-view', GodView::class)->name('god-view');
     Route::get('/price-tiers', PriceTiers::class)->name('price-tiers');
     Route::get('/theme-manager', \App\Livewire\Admin\ThemeManager::class)->name('theme-manager');

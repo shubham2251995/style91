@@ -61,6 +61,29 @@
                         @endif
                     </div>
 
+                    <!-- Gender Filter -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" wire:model.live="gender" value="" class="text-brand-accent focus:ring-brand-accent">
+                                <span class="ml-2 text-sm text-gray-700">All</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" wire:model.live="gender" value="Men" class="text-brand-accent focus:ring-brand-accent">
+                                <span class="ml-2 text-sm text-gray-700">Men</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" wire:model.live="gender" value="Women" class="text-brand-accent focus:ring-brand-accent">
+                                <span class="ml-2 text-sm text-gray-700">Women</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" wire:model.live="gender" value="Unisex" class="text-brand-accent focus:ring-brand-accent">
+                                <span class="ml-2 text-sm text-gray-700">Unisex</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <!-- Category Filter -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
@@ -81,6 +104,38 @@
                             <input type="number" wire:model.live.debounce.500ms="maxPrice" placeholder="Max" class="w-full border-gray-300 rounded-lg text-sm">
                         </div>
                     </div>
+
+                    <!-- Size Filter -->
+                    @if(count($availableSizes) > 0)
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Size</label>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($availableSizes as $size)
+                                <label class="cursor-pointer">
+                                    <input type="checkbox" wire:model.live="selectedSizes" value="{{ $size }}" class="peer sr-only">
+                                    <span class="px-3 py-1 border rounded text-sm peer-checked:bg-brand-black peer-checked:text-white peer-checked:border-brand-black hover:border-gray-400 transition-colors">
+                                        {{ $size }}
+                                    </span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
+                    <!-- Color Filter -->
+                    @if(count($availableColors) > 0)
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Color</label>
+                        <div class="space-y-2 max-h-40 overflow-y-auto">
+                            @foreach($availableColors as $color)
+                                <label class="flex items-center">
+                                    <input type="checkbox" wire:model.live="selectedColors" value="{{ $color }}" class="rounded text-brand-accent focus:ring-brand-accent">
+                                    <span class="ml-2 text-sm text-gray-700">{{ $color }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
 
                     <!-- Tags Filter -->
                     @if(count($allTags) > 0)

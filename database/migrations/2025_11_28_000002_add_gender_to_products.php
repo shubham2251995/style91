@@ -13,7 +13,7 @@ return new class extends Migration
     {
         if (!Schema::hasColumn('products', 'gender')) {
             Schema::table('products', function (Blueprint $table) {
-                $table->enum('gender', ['Men', 'Women', 'Unisex'])->default('Unisex')->after('category_id');
+                $table->enum('gender', ['Men', 'Women', 'Unisex'])->default('Unisex');
             });
         }
     }

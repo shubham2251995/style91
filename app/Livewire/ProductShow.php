@@ -22,6 +22,10 @@ class ProductShow extends Component
     public $variantId;
     public $availableOptions = [];
     
+    public $selectedSize = null;
+    public $selectedColor = null;
+    public $completeTheLookProducts = [];
+    
     // SEO Meta Tags
     public $metaTitle;
     public $metaDescription;
@@ -29,7 +33,11 @@ class ProductShow extends Component
 
     public function mount($slug)
     {
-        $this->product = Product::with(['category', 'variants', 'reviews.user'])->where('slug', $slug)->firstOrFail();
+        $this->product = Product::with(['category', 'images', 'variants', 'reviews.user'])->where('slug', $slug)->firstOrFail();
+        
+        // AI Stylist
+        $stylist = app(\App\Services\AiStylistService::class);
+        $this->completeTheLookProducts = $stylist->completeTheLook($this->product);
         
         // Track recently viewed
         $viewed = session('recently_viewed', []);

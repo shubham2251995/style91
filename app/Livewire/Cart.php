@@ -59,6 +59,28 @@ class Cart extends Component
         }
     }
 
+    public function getFreeShippingThresholdProperty()
+    {
+        return 1000; // Hardcoded for now, could be dynamic setting
+    }
+
+    public function getFreeShippingProgressProperty()
+    {
+        $total = $this->total;
+        $threshold = $this->freeShippingThreshold;
+        
+        if ($total >= $threshold) {
+            return 100;
+        }
+        
+        return ($total / $threshold) * 100;
+    }
+
+    public function getAmountLeftForFreeShippingProperty()
+    {
+        return max(0, $this->freeShippingThreshold - $this->total);
+    }
+
     public function increment($itemId)
     {
         $cart = app(CartService::class)->get();

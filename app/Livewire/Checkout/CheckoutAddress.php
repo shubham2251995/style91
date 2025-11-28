@@ -138,32 +138,21 @@ class CheckoutAddress extends Component
 
     public function applyCoupon()
     {
-        $coupon = \App\Models\Coupon::where('code', $this->couponCode)
-                                     ->where('is_active', true)
-                                     ->where('expiry_date', '>=', now())
-                                     ->first();
-
-        if (!$coupon) {
-            session()->flash('error', 'Invalid or expired coupon code');
-            return;
-        }
-
-        // Calculate discount
         $cartTotal = $this->getCartTotal();
+        $couponService = app(\App\Services\CouponService::class);
         
-        if ($coupon->min_order_value && $cartTotal < $coupon->min_order_value) {
-            session()->flash('error', 'Minimum order value of ₹' . $coupon->min_order_value . ' required');
+        $result = $couponService->validate($this->couponCode, $cartTotal);
+
+        if (!$result['valid']) {
+            session()->flash('error', $result['message']);
             return;
         }
 
-        if ($coupon->type === 'percentage') {
-            $this->discount = ($cartTotal * $coupon->value) / 100;
-        } else {
-            $this->discount = $coupon->value;
-        }
+        $coupon = $result['coupon'];
+        $this->discount = $couponService->calculateDiscount($coupon, $cartTotal);
 
         session(['checkout_coupon' => $this->couponCode]);
-        session()->flash('message', 'Coupon applied successfully!');
+        session()->flash('message', $result['message']);
     }
 
     public function proceedToPayment()
@@ -198,7 +187,19 @@ class CheckoutAddress extends Component
     public function render()
     {
         $addresses = Auth::check() ? Auth::user()->addresses : collect();
-        $shippingMethods = ShippingMethod::active()->get();
+        
+        $shippingService = app(\App\Services\ShippingService::class);
+        $shippingMethods = collect();
+        
+        if ($this->step === 'shipping' || $this->step === 'review') {
+            // Use current address context
+            $country = $this->country;
+            $state = $this->state;
+            $postcode = $this->postcode;
+            
+            $shippingMethods = $shippingService->getAvailableMethods($country, $state, $postcode);
+        }
+
         $cartItems = session('cart', []);
         $cartTotal = $this->getCartTotal();
         $finalTotal = $cartTotal + $this->shippingCost - $this->discount;
