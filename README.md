@@ -245,7 +245,7 @@ php artisan migrate:fresh --seed
 
 For issues or questions:
 - Email: support@style91.com
-- GitHub Issues: [https://github.com/yourusername/style91/issues](https://github.com/yourusername/style91/issues)
+- GitHub Issues: [https://github.com/shubham2251995/style91/issues](https://github.com/shubham2251995/style91/issues)
 
 ## License
 
