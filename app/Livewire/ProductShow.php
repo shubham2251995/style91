@@ -119,6 +119,16 @@ class ProductShow extends Component
         $this->dispatch('cart-updated'); // Optional: if we want to refresh cart count elsewhere
     }
 
+    public function buyNow()
+    {
+        if ($this->product->hasVariants() && !$this->variantId) {
+            return;
+        }
+
+        app(CartService::class)->add($this->product->id, $this->quantity, $this->variantId);
+        return redirect()->route('checkout.address');
+    }
+
     // Safe plugin check properties
     public function getDigitalWardrobeActiveProperty()
     {

@@ -34,6 +34,12 @@ class CheckoutAddress extends Component
     public $couponCode = '';
     public $discount = 0;
 
+    // Loyalty Points
+    public $usePoints = false;
+    public $pointsToRedeem = 0;
+    public $pointsDiscount = 0;
+    public $pointsConversionRate = 0.1; // 1 point = 0.1 currency unit (e.g., 10 points = 1 INR)
+
     protected $rules = [
         'fullName' => 'required|string|max:255',
         'phone' => 'required|string|max:20',
@@ -155,16 +161,36 @@ class CheckoutAddress extends Component
         session()->flash('message', $result['message']);
     }
 
+    public function updatedUsePoints()
+    {
+        if ($this->usePoints && Auth::check()) {
+            $userPoints = Auth::user()->loyalty_points;
+            $cartTotal = $this->getCartTotal();
+            
+            // Max points redeemable is up to 50% of cart value or total user points
+            $maxRedeemableValue = $cartTotal * 0.5;
+            $maxRedeemablePoints = $maxRedeemableValue / $this->pointsConversionRate;
+            
+            $this->pointsToRedeem = min($userPoints, $maxRedeemablePoints);
+            $this->pointsDiscount = $this->pointsToRedeem * $this->pointsConversionRate;
+        } else {
+            $this->pointsToRedeem = 0;
+            $this->pointsDiscount = 0;
+        }
+    }
+
     public function proceedToPayment()
     {
         $cartTotal = $this->getCartTotal();
-        $finalTotal = $cartTotal + $this->shippingCost - $this->discount;
+        $finalTotal = $cartTotal + $this->shippingCost - $this->discount - $this->pointsDiscount;
 
         session(['pending_order' => [
             'total' => $finalTotal,
             'subtotal' => $cartTotal,
             'shipping_cost' => $this->shippingCost,
             'discount' => $this->discount,
+            'points_redeemed' => $this->pointsToRedeem,
+            'points_discount' => $this->pointsDiscount,
             'shipping_name' => $this->fullName,
             'shipping_phone' => $this->phone,
             'shipping_email' => $this->email,
@@ -202,7 +228,7 @@ class CheckoutAddress extends Component
 
         $cartItems = session('cart', []);
         $cartTotal = $this->getCartTotal();
-        $finalTotal = $cartTotal + $this->shippingCost - $this->discount;
+        $finalTotal = $cartTotal + $this->shippingCost - $this->discount - $this->pointsDiscount;
 
         return view('livewire.checkout.checkout-address', [
             'addresses' => $addresses,

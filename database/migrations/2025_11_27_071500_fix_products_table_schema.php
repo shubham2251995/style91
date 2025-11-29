@@ -19,6 +19,12 @@ return new class extends Migration
         // Check and drop category column
         if (Schema::hasColumn('products', 'category')) {
             Schema::table('products', function (Blueprint $table) {
+                // Explicitly drop index first to prevent SQLite errors
+                try {
+                    $table->dropIndex(['category']);
+                } catch (\Exception $e) {
+                    // Index might not exist or already dropped
+                }
                 $table->dropColumn('category');
             });
         }

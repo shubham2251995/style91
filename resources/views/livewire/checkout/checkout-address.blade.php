@@ -236,6 +236,24 @@
                         @endforelse
                     </div>
 
+                    <!-- Loyalty Points -->
+                    @auth
+                        @if(Auth::user()->loyalty_points > 0)
+                            <div class="mb-4 p-3 bg-brand-accent/10 rounded-lg border border-brand-accent/20">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" wire:model.live="usePoints" class="rounded text-brand-accent focus:ring-brand-accent">
+                                    <span class="text-sm font-bold text-brand-black">Redeem {{ Auth::user()->loyalty_points }} Points</span>
+                                </label>
+                                @if($usePoints)
+                                    <div class="mt-2 text-xs text-gray-600 flex justify-between">
+                                        <span>Redeeming {{ $pointsToRedeem }} pts</span>
+                                        <span class="font-bold text-green-600">-₹{{ number_format($pointsDiscount, 2) }}</span>
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
+                    @endauth
+
                     <!-- Coupon -->
                     <div class="mb-4">
                         <div class="flex gap-2">
@@ -260,6 +278,12 @@
                             <div class="flex justify-between text-sm text-green-600">
                                 <span>Discount</span>
                                 <span>-₹{{ number_format($discount, 2) }}</span>
+                            </div>
+                        @endif
+                        @if($pointsDiscount > 0)
+                            <div class="flex justify-between text-sm text-brand-accent font-bold">
+                                <span>Points Redeemed</span>
+                                <span>-₹{{ number_format($pointsDiscount, 2) }}</span>
                             </div>
                         @endif
                         <div class="flex justify-between text-lg font-bold border-t pt-2">

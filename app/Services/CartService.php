@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 class CartService
 {
     const SESSION_KEY = 'cart';
+    const SAVED_KEY = 'cart_saved_for_later';
 
     public function add($productId, $quantity = 1, $variantId = null)
     {
@@ -200,6 +201,62 @@ class CartService
             Session::forget('cart_expires_at');
         } catch (\Exception $e) {
             Log::error('Error clearing cart: ' . $e->getMessage());
+        }
+    }
+
+    // Save for Later Methods
+
+    public function getSaved()
+    {
+        return Session::get(self::SAVED_KEY, []);
+    }
+
+    public function saveForLater($key)
+    {
+        try {
+            $cart = $this->get();
+            $saved = $this->getSaved();
+
+            if (isset($cart[$key])) {
+                $saved[$key] = $cart[$key];
+                unset($cart[$key]);
+
+                Session::put(self::SESSION_KEY, $cart);
+                Session::put(self::SAVED_KEY, $saved);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error saving item for later: ' . $e->getMessage());
+        }
+    }
+
+    public function moveToCart($key)
+    {
+        try {
+            $cart = $this->get();
+            $saved = $this->getSaved();
+
+            if (isset($saved[$key])) {
+                $cart[$key] = $saved[$key];
+                unset($saved[$key]);
+
+                Session::put(self::SESSION_KEY, $cart);
+                Session::put(self::SAVED_KEY, $saved);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error moving item to cart: ' . $e->getMessage());
+        }
+    }
+
+    public function removeSaved($key)
+    {
+        try {
+            $saved = $this->getSaved();
+            if (isset($saved[$key])) {
+                unset($saved[$key]);
+                Session::put(self::SAVED_KEY, $saved);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error removing saved item: ' . $e->getMessage());
         }
     }
 }

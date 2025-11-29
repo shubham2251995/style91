@@ -220,17 +220,17 @@ class ProductSearch extends Component
 
         // Fetch Facets (Sizes & Colors)
         $availableSizes = \App\Models\ProductVariant::active()
-            ->selectRaw("json_unquote(json_extract(options, '$.size')) as size")
+            ->select('size')
             ->distinct()
-            ->whereNotNull(DB::raw("json_extract(options, '$.size')"))
+            ->whereNotNull('size')
             ->pluck('size')
             ->sort()
             ->values();
 
         $availableColors = \App\Models\ProductVariant::active()
-            ->selectRaw("json_unquote(json_extract(options, '$.color')) as color")
+            ->select('color')
             ->distinct()
-            ->whereNotNull(DB::raw("json_extract(options, '$.color')"))
+            ->whereNotNull('color')
             ->pluck('color')
             ->sort()
             ->values();

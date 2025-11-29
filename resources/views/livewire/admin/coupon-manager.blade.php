@@ -124,9 +124,15 @@
                                 <input type="date" wire:model="expires_at" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                             </div>
 
-                            <div class="flex items-center">
-                                <input type="checkbox" wire:model="is_active" class="h-4 w-4 text-brand-dark border-gray-300 rounded">
-                                <label class="ml-2 block text-sm text-gray-900">Active</label>
+                            <div class="flex items-center gap-6">
+                                <div class="flex items-center">
+                                    <input type="checkbox" wire:model="is_active" class="h-4 w-4 text-brand-dark border-gray-300 rounded">
+                                    <label class="ml-2 block text-sm text-gray-900">Active</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" wire:model="is_public" class="h-4 w-4 text-brand-dark border-gray-300 rounded">
+                                    <label class="ml-2 block text-sm text-gray-900">Public (Visible to Users)</label>
+                                </div>
                             </div>
                         </div>
                     </div>

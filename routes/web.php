@@ -48,10 +48,18 @@ Route::get('/cart', Cart::class)->name('cart');
 Route::get('/checkout', function() {
     return redirect()->route('checkout.address');
 })->name('checkout');
+
+// Onboarding & Profile Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/onboarding', \App\Livewire\Onboarding\OnboardingWizard::class)->name('onboarding');
+    Route::get('/profile', \App\Livewire\UserProfile::class)->name('profile');
+    Route::get('/account', \App\Livewire\CustomerDashboard::class)->name('account');
+});
+
+// Authentication Routes::get('/flex/{orderId}', FlexCard::class)->name('flex');
 Route::get('/flex/{orderId}', FlexCard::class)->name('flex');
 Route::get('/wardrobe', WardrobeIndex::class)->name('wardrobe')->middleware('auth');
 Route::get('/wishlist', \App\Livewire\WishlistIndex::class)->name('wishlist')->middleware('auth');
-Route::get('/account', \App\Livewire\CustomerDashboard::class)->name('account')->middleware('auth');
 Route::get('/account/orders/{orderId}', \App\Livewire\OrderDetails::class)->name('account.order')->middleware('auth');
 Route::get('/account/orders/{orderId}/return', \App\Livewire\ReturnRequestPage::class)->name('account.order.return')->middleware('auth');
 Route::get('/gift-cards', \App\Livewire\GiftCardPurchase::class)->name('gift-cards.purchase');
@@ -107,13 +115,12 @@ Route::get('/token-gate', \App\Livewire\TokenGate::class)->name('token-gate');
 Route::get('/mirror', \App\Livewire\MagicMirror::class)->name('magic-mirror');
 Route::get('/customizer', \App\Livewire\Customizer::class)->name('customizer');
 
+// Lookbook
+Route::get('/lookbook', \App\Livewire\Lookbook\Index::class)->name('lookbook.index');
+Route::get('/lookbook/{lookbook}', \App\Livewire\Lookbook\Show::class)->name('lookbook.show');
+
 // SEO
-Route::get('/sitemap.xml', function() {
-    $products = \App\Models\Product::all();
-    $categories = \App\Models\Product::distinct()->pluck('category')->filter();
-    return response()->view('sitemap', compact('products', 'categories'))
-        ->header('Content-Type', 'application/xml');
-});
+// Sitemap route moved to controller below
 
 // OLD Livewire installer (disabled - using standalone controller instead)
 // Route::get('/install', \App\Livewire\Installer::class)->name('install');
@@ -128,7 +135,6 @@ Route::post('/logout', function () {
 
 // Routes removed for production security
 // Use SSH or Artisan commands for cache clearing and migrations
-
 
 Route::get('/debug-auth', function () {
     return [
@@ -212,6 +218,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/analytics', \App\Livewire\Admin\SalesDashboard::class)->name('sales-dashboard');
     Route::get('/reports', \App\Livewire\Admin\ReportManager::class)->name('report-manager');
     Route::get('/sections', \App\Livewire\Admin\SectionManager::class)->name('section-manager');
+    Route::get('/banners', \App\Livewire\Admin\BannerManager::class)->name('banner-manager');
     Route::get('/menus', \App\Livewire\Admin\MenuManager::class)->name('menu-manager');
     Route::get('/stock-adjustments', \App\Livewire\Admin\StockAdjustmentManager::class)->name('stock-adjustments');
 });

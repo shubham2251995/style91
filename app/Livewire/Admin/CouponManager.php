@@ -19,6 +19,7 @@ class CouponManager extends Component
     public $usage_limit;
     public $expires_at;
     public $is_active = true;
+    public $is_public = false;
 
     protected $rules = [
         'code' => 'required|string|max:255|unique:coupons,code',
@@ -28,6 +29,7 @@ class CouponManager extends Component
         'usage_limit' => 'nullable|integer|min:1',
         'expires_at' => 'nullable|date',
         'is_active' => 'boolean',
+        'is_public' => 'boolean',
     ];
 
     public function create()
@@ -55,6 +57,7 @@ class CouponManager extends Component
         $this->usage_limit = null;
         $this->expires_at = '';
         $this->is_active = true;
+        $this->is_public = false;
         $this->couponId = null;
     }
 
@@ -75,6 +78,7 @@ class CouponManager extends Component
             'usage_limit' => $this->usage_limit,
             'expires_at' => $this->expires_at,
             'is_active' => $this->is_active,
+            'is_public' => $this->is_public,
         ]);
 
         session()->flash('message', $this->couponId ? 'Coupon Updated Successfully.' : 'Coupon Created Successfully.');
@@ -94,6 +98,7 @@ class CouponManager extends Component
         $this->usage_limit = $coupon->usage_limit;
         $this->expires_at = $coupon->expires_at ? $coupon->expires_at->format('Y-m-d') : '';
         $this->is_active = $coupon->is_active;
+        $this->is_public = $coupon->is_public;
 
         $this->openModal();
     }

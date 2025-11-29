@@ -15,11 +15,13 @@ class Coupon extends Model
         'used_count',
         'expires_at',
         'is_active',
+        'is_public',
     ];
 
     protected $casts = [
         'expires_at' => 'datetime',
         'is_active' => 'boolean',
+        'is_public' => 'boolean',
     ];
 
     public function isValid($orderTotal = 0)

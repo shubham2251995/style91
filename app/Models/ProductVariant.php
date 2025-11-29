@@ -13,7 +13,8 @@ class ProductVariant extends Model
         'compare_price',
         'stock_quantity',
         'image_url',
-        'options',
+        'size',
+        'color',
         'is_active',
     ];
 
@@ -21,7 +22,6 @@ class ProductVariant extends Model
         'price' => 'decimal:2',
         'compare_price' => 'decimal:2',
         'stock_quantity' => 'integer',
-        'options' => 'array',
         'is_active' => 'boolean',
     ];
 
@@ -43,8 +43,11 @@ class ProductVariant extends Model
     public function getOptionLabel()
     {
         $labels = [];
-        foreach ($this->options as $key => $value) {
-            $labels[] = ucfirst($key) . ': ' . $value;
+        if ($this->size) {
+            $labels[] = 'Size: ' . $this->size;
+        }
+        if ($this->color) {
+            $labels[] = 'Color: ' . $this->color;
         }
         return implode(', ', $labels);
     }

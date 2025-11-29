@@ -4,16 +4,19 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Tag;
 use App\Models\ProductVariant;
 use App\Models\VariantOption;
+use App\Models\ProductImage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ProductManager extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     public $isModalOpen = false;
     public $productId;
@@ -35,6 +38,17 @@ class ProductManager extends Component
     public $filterCategory = '';
     public $filterStatus = '';
     public $filterStock = '';
+    
+    // Bulk Operations
+    public $selectedProducts = [];
+    public $selectAll = false;
+    public $bulkAction = '';
+    public $bulkCategory = '';
+    public $bulkStock = '';
+    
+    // Image Upload
+    public $photos = [];
+    public $existingImages = [];
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -54,6 +68,85 @@ class ProductManager extends Component
     public function updatingFilterCategory()
     {
         $this->resetPage();
+    }
+    
+    public function updatedSelectAll($value)
+    {
+        if ($value) {
+            $this->selectedProducts = $this->products->pluck('id')->toArray();
+        } else {
+            $this->selectedProducts = [];
+        }
+    }
+    
+    public function executeBulkAction()
+    {
+        if (empty($this->selectedProducts)) {
+            session()->flash('error', 'No products selected');
+            return;
+        }
+        
+        switch ($this->bulkAction) {
+            case 'delete':
+                $this->bulkDelete();
+                break;
+            case 'update_category':
+                $this->bulkUpdateCategory();
+                break;
+            case 'update_stock':
+                $this->bulkUpdateStock();
+                break;
+            default:
+                session()->flash('error', 'Invalid action selected');
+        }
+        
+        $this->selectedProducts = [];
+        $this->selectAll = false;
+        $this->bulkAction = '';
+    }
+    
+    private function bulkDelete()
+    {
+        try {
+            Product::whereIn('id', $this->selectedProducts)->delete();
+            session()->flash('message', count($this->selectedProducts) . ' products deleted successfully');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error deleting products: ' . $e->getMessage());
+        }
+    }
+    
+    private function bulkUpdateCategory()
+    {
+        if (empty($this->bulkCategory)) {
+            session()->flash('error', 'Please select a category');
+            return;
+        }
+        
+        try {
+            Product::whereIn('id', $this->selectedProducts)
+                ->update(['category_id' => $this->bulkCategory]);
+            session()->flash('message', count($this->selectedProducts) . ' products updated successfully');
+            $this->bulkCategory = '';
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error updating products: ' . $e->getMessage());
+        }
+    }
+    
+    private function bulkUpdateStock()
+    {
+        if ($this->bulkStock === '' || $this->bulkStock < 0) {
+            session()->flash('error', 'Please enter a valid stock quantity');
+            return;
+        }
+        
+        try {
+            Product::whereIn('id', $this->selectedProducts)
+                ->update(['stock_quantity' => $this->bulkStock]);
+            session()->flash('message', count($this->selectedProducts) . ' products stock updated successfully');
+            $this->bulkStock = '';
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error updating stock: ' . $e->getMessage());
+        }
     }
 
     public function create()

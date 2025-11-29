@@ -147,16 +147,16 @@
 
         <!-- Primary Action Button (Sticky on Mobile with Safe Area) -->
         <div class="fixed bottom-16 left-0 w-full p-4 z-40 md:static md:p-0 md:mb-8 md:z-auto pointer-events-none">
-            <div class="pointer-events-auto max-w-md mx-auto md:max-w-none">
+            <div class="pointer-events-auto max-w-md mx-auto md:max-w-none flex gap-4">
                 <button 
                     wire:click="addToCart" 
                     wire:loading.attr="disabled"
                     @if($variantStock <= 0) disabled @endif
-                    class="w-full bg-brand-black text-white font-black text-lg py-4 rounded-xl relative overflow-hidden transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl shadow-brand-accent/20"
+                    class="flex-1 bg-brand-black text-white font-black text-lg py-4 rounded-xl relative overflow-hidden transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl shadow-brand-accent/20"
                     x-data="{ added: @entangle('added') }">
                     
                     <!-- Loading State -->
-                    <div wire:loading class="absolute inset-0 flex items-center justify-center bg-brand-black z-10">
+                    <div wire:loading wire:target="addToCart" class="absolute inset-0 flex items-center justify-center bg-brand-black z-10">
                         <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -178,6 +178,20 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                         </svg>
                     </div>
+                </button>
+
+                <button 
+                    wire:click="buyNow" 
+                    wire:loading.attr="disabled"
+                    @if($variantStock <= 0) disabled @endif
+                    class="flex-1 bg-brand-accent text-brand-black font-black text-lg py-4 rounded-xl relative overflow-hidden transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-brand-accent/30">
+                    <div wire:loading wire:target="buyNow" class="absolute inset-0 flex items-center justify-center bg-brand-accent z-10">
+                        <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                    <span>BUY NOW</span>
                 </button>
             </div>
         </div>

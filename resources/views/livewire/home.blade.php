@@ -1,4 +1,10 @@
 <div class="space-y-12 pb-24">
+    {{-- Advanced Banner System --}}
+    <x-banners.display position="hero" />
+
+    {{-- Hype Train (if any) --}}
+    <x-banners.display position="header-sticky" />
+
     @if($sections->count() > 0)
         {{-- Render dynamic sections from database --}}
         @foreach($sections as $section)
@@ -22,24 +28,8 @@
     @else
         {{-- Fallback: Static content when no sections exist --}}
         
-        <!-- Hero Section (Premium Full Screen) -->
-        <section class="relative w-full h-[85vh] md:h-[80vh] overflow-hidden">
-            <div class="absolute inset-0">
-                <img src="https://images.unsplash.com/photo-1523396870179-16bed9562000?q=80&w=2000&auto=format&fit=crop" 
-                     class="w-full h-full object-cover object-center" 
-                     alt="Hero Background">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-            </div>
-            
-            <div class="absolute bottom-0 left-0 w-full p-8 md:p-16 flex flex-col items-start justify-end h-full">
-                <span class="bg-brand-accent text-brand-black text-xs font-black tracking-widest uppercase px-3 py-1 mb-4">New Collection</span>
-                <h2 class="text-white font-black text-5xl md:text-7xl mb-4 leading-tight">STREET<br>CULTURE</h2>
-                <p class="text-gray-300 text-sm md:text-lg mb-8 max-w-md">Redefining urban fashion with premium cuts and bold designs. Up to 60% off on selected items.</p>
-                <button class="bg-white text-brand-black px-8 py-4 rounded-none font-black text-sm uppercase tracking-widest hover:bg-brand-accent transition-colors duration-300">
-                    Shop The Drop
-                </button>
-            </div>
-        </section>
+        {{-- Enhanced Hero Section --}}
+        <x-sections.hero-enhanced />
 
         <!-- Categories Grid (Responsive) -->
         <section class="px-4 md:px-8 py-12 max-w-7xl mx-auto">

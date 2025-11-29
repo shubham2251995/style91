@@ -16,6 +16,28 @@ class Product extends Model
         'category_id',
         'category', // Keep for backward compatibility during migration
         'gender',
+        // Enhanced fields
+        'badge',
+        'sold_count',
+        'view_count',
+        'avg_rating',
+        'review_count',
+        'is_featured',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
+        'size_guide',
+    ];
+    
+    protected $casts = [
+        'is_featured' => 'boolean',
+        'sold_count' => 'integer',
+        'view_count' => 'integer',
+        'stock_quantity' => 'integer',
+        'avg_rating' => 'decimal:2',
+        'review_count' => 'integer',
+        'price' => 'decimal:2',
+        'size_guide' => 'array',
     ];
 
     public function getRouteKeyName()
@@ -37,6 +59,11 @@ class Product extends Model
     public function variants()
     {
         return $this->hasMany(ProductVariant::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class)->orderBy('display_order');
     }
 
     public function hasVariants()

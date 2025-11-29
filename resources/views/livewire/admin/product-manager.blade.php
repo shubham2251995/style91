@@ -8,8 +8,20 @@
         </div>
 
         @if (session()->has('message'))
-            <div class="bg-green-500/10 border border-green-500/50 text-green-400 px-4 py-3 rounded-xl relative mb-4">
+            <div class="bg-green-500/10 border border-green-500/50 text-green-400 px-4 py-3 rounded-xl relative mb-4 flex items-center gap-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
                 {{ session('message') }}
+            </div>
+        @endif
+        
+        @if (session()->has('error'))
+            <div class="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-xl relative mb-4 flex items-center gap-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                {{ session('error') }}
             </div>
         @endif
 
@@ -36,18 +48,8 @@
                     </select>
                 </div>
                 <div>
-                    <button wire:click="$set('searchTerm', ''); $set('filterCategory', ''); $set('filterStock', '')" class="w-full bg-white/5 text-gray-300 border border-white/10 px-3 py-2 rounded-lg text-sm hover:bg-white/10 transition-colors">
-                        Clear Filters
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Products Table -->
-        <div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden backdrop-blur-sm">
-            <table class="min-w-full divide-y divide-white/5">
-                <thead class="bg-white/5">
-                    <tr>
+                            <input type="checkbox" wire:model="selectAll" class="rounded border-gray-600 text-brand-accent focus:ring-brand-accent bg-gray-800">
+                        </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Product</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Category</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Price</th>
@@ -58,7 +60,10 @@
                 </thead>
                 <tbody class="divide-y divide-white/5">
                     @forelse($products as $product)
-                        <tr class="hover:bg-white/5 transition-colors">
+                        <tr class="hover:bg-white/5 transition-colors" :class="{{ in_array($product->id, $selectedProducts) ? 'bg-brand-accent/10' : '' }}">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <input type="checkbox" wire:model="selectedProducts" value="{{ $product->id }}" class="rounded border-gray-600 text-brand-accent focus:ring-brand-accent bg-gray-800">
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     @if($product->image_url)
