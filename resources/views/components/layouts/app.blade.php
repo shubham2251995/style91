@@ -1,58 +1,53 @@
-@php
+    @php
+$siteSettings = null;
+try {
+    $seoService = new \App\Services\SeoService();
+    $model = $product ?? null;
+    $seoTagsArray = $seoService->generateTags($model);
+    $seoSchema = $seoService->generateSchema($model);
+    $navService = new \App\Services\NavigationService();
+    $headerLinks = $navService->getHeader();
+    $footerColumns = $navService->getFooter();
+
+    // Site Settings Service - handle pre-installation gracefully
     try {
-        $seoService = new \App\Services\SeoService();
-        // Check if we have a product or other model in the view data
-        $model = $product ?? null; 
-        $seoTagsArray = $seoService->generateTags($model);
-        $seoSchema = $seoService->generateSchema($model);
-        $navService = new \App\Services\NavigationService();
-        $headerLinks = $navService->getHeader();
-        $footerColumns = $navService->getFooter();
-        
-        // Site Settings Service - wrapped in try-catch for pre-installation
-        try {
-            $siteSettings = app(\App\Services\SiteSettingsService::class);
-            $siteName = $siteSettings->get('site_name', config('app.name', 'Style91'));
-            $metaTitle = $seoTagsArray['title'] ?? $siteSettings->get('meta_title', $siteName);
-            $metaDescription = $seoTagsArray['description'] ?? $siteSettings->get('meta_description', 'Premium Streetwear Fashion');
-            $metaKeywords = $seoTagsArray['keywords'] ?? $siteSettings->get('meta_keywords', 'streetwear, fashion');
-            $ogImage = $seoTagsArray['image'] ?? $siteSettings->get('og_image', '/images/og-default.jpg');
-            $gaId = $siteSettings->get('google_analytics_id', env('GOOGLE_ANALYTICS_ID'));
-            $siteLogo = $siteSettings->get('site_logo', null);
-        } catch (\Exception $settingsError) {
-            // Settings table doesn't exist yet (pre-installation)
-            $siteName = config('app.name', 'Style91');
-            $metaTitle = $seoTagsArray['title'] ?? $siteName;
-            $metaDescription = $seoTagsArray['description'] ?? 'Premium Streetwear Fashion';
-            $metaKeywords = $seoTagsArray['keywords'] ?? 'streetwear, fashion';
-            $ogImage = $seoTagsArray['image'] ?? '/images/og-default.jpg';
-            $gaId = env('GOOGLE_ANALYTICS_ID');
-        }
-        
-        $ogUrl = $seoTagsArray['url'] ?? url()->current();
-        $ogType = $seoTagsArray['type'] ?? 'website';
-    } catch (\Exception $e) {
-        // During installation or if database not available
-        $seoTagsArray = [];
-        $seoSchema = '';
-        $headerLinks = [];
-        $footerColumns = [];
+        $siteSettings = app(\App\Services\SiteSettingsService::class);
+        $siteName = $siteSettings->get('site_name', config('app.name', 'Style91'));
+        $metaTitle = $seoTagsArray['title'] ?? $siteSettings->get('meta_title', $siteName);
+        $metaDescription = $seoTagsArray['description'] ?? $siteSettings->get('meta_description', 'Premium Streetwear Fashion');
+        $metaKeywords = $seoTagsArray['keywords'] ?? $siteSettings->get('meta_keywords', 'streetwear, fashion');
+        $ogImage = $seoTagsArray['image'] ?? $siteSettings->get('og_image', '/images/og-default.jpg');
+        $gaId = $siteSettings->get('google_analytics_id', env('GOOGLE_ANALYTICS_ID'));
+        $siteLogo = $siteSettings->get('site_logo', null);
+    } catch (\Exception $settingsError) {
         $siteName = config('app.name', 'Style91');
-        $metaTitle = $siteName;
-        $metaDescription = 'Premium Streetwear Fashion';
-        $metaKeywords = 'streetwear, fashion';
-        $ogImage = '/images/og-default.jpg';
-        $ogUrl = url()->current();
-        $ogType = 'website';
+        $metaTitle = $seoTagsArray['title'] ?? $siteName;
+        $metaDescription = $seoTagsArray['description'] ?? 'Premium Streetwear Fashion';
+        $metaKeywords = $seoTagsArray['keywords'] ?? 'streetwear, fashion';
+        $ogImage = $seoTagsArray['image'] ?? '/images/og-default.jpg';
         $gaId = env('GOOGLE_ANALYTICS_ID');
+        $siteLogo = null;
     }
+
+    $ogUrl = $seoTagsArray['url'] ?? url()->current();
+    $ogType = $seoTagsArray['type'] ?? 'website';
+} catch (\Exception $e) {
+    // Fallback for installation or DB issues
+    $seoTagsArray = [];
+    $seoSchema = '';
+    $headerLinks = [];
+    $footerColumns = [];
+    $siteName = config('app.name', 'Style91');
+    $metaTitle = $siteName;
+    $metaDescription = 'Premium Streetwear Fashion';
+    $metaKeywords = 'streetwear, fashion';
+    $ogImage = '/images/og-default.jpg';
+    $ogUrl = url()->current();
+    $ogType = 'website';
+    $gaId = env('GOOGLE_ANALYTICS_ID');
+    $siteLogo = null;
+}
 @endphp
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $metaTitle ?? 'Style91' }}</title>
     <meta name="description" content="{{ $metaDescription }}">
@@ -266,7 +261,7 @@
             <div class="grid grid-cols-4 gap-12 mb-16">
                 <div>
                     <a href="{{ route('home') }}" class="font-black text-3xl tracking-tighter text-brand-accent mb-6 block">{{ $siteName }}</a>
-                    <p class="text-gray-400 text-sm leading-relaxed">{{ $siteSettings->get('footer_text', 'Built for the culture. The ultimate streetwear experience.') }}</p>
+                    <p class="text-gray-400 text-sm leading-relaxed">{{ $siteSettings ? $siteSettings->get('footer_text', 'Built for the culture. The ultimate streetwear experience.') : 'Built for the culture. The ultimate streetwear experience.' }}</p>
                 </div>
                 
                 @if(isset($footerMenu1) || isset($footerMenu2))
