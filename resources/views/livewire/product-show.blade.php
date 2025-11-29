@@ -218,9 +218,17 @@
                 {!! $product->description !!}
             </div>
             
-            <!-- Social Share -->
-            <div class="mt-8 pt-8 border-t border-gray-100">
-                <livewire:social-share :url="route('product', $product->slug)" :title="$product->name" />
+            <!-- Social Share & Ask for Advice -->
+            <div class="mt-8 pt-8 border-t border-gray-100 space-y-4">
+                <h4 class="font-bold text-sm text-gray-900 uppercase tracking-wider">Share & Get Feedback</h4>
+                <div class="flex flex-wrap gap-3">
+                    <div class="flex-1 min-w-[200px]">
+                        <livewire:social-share :url="route('product', $product->slug)" :title="$product->name" />
+                    </div>
+                    <div class="flex-1 min-w-[200px]">
+                        <livewire:ask-for-advice :productId="$product->id" :productName="$product->name" />
+                    </div>
+                </div>
             </div>
         </div>
         @endif

@@ -77,6 +77,9 @@ try {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
+    <!-- Premium UI Enhancements -->
+    <link rel="stylesheet" href="{{ asset('css/premium-ui.css') }}">
+    
     <style>
         :root {
             --brand-black: #050505;

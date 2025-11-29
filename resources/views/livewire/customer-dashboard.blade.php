@@ -99,26 +99,15 @@
                 <livewire:address-manager />
             @elseif($activeTab === 'profile')
                 <!-- Profile Tab -->
-                <div>
-                    <h2 class="text-xl font-bold mb-4 text-brand-dark">Profile Information</h2>
-                    <div class="space-y-4 max-w-md">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Name</label>
-                            <input type="text" value="{{ $user->name }}" class="w-full border border-gray-300 rounded-lg px-4 py-2" readonly>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Email</label>
-                            <input type="email" value="{{ $user->email ?? 'Not set' }}" class="w-full border border-gray-300 rounded-lg px-4 py-2" readonly>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Mobile</label>
-                            <input type="text" value="{{ $user->mobile }}" class="w-full border border-gray-300 rounded-lg px-4 py-2" readonly>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Member Since</label>
-                            <input type="text" value="{{ $user->created_at->format('F Y') }}" class="w-full border border-gray-300 rounded-lg px-4 py-2" readonly>
-                        </div>
-                    </div>
+                <div class="space-y-6">
+                    <h2 class="text-xl font-bold text-brand-dark">Profile Management</h2>
+                    
+                    <!-- Profile Photo Upload -->
+                    <livewire:user-profile.photo-upload />
+                    
+                    <!-- Edit Profile Information -->
+                    <livewire:user-profile.edit-profile />
+                </div>
 
                     <!-- Password Change Section -->
                     <div class="mt-8 pt-8 border-t border-gray-200">
