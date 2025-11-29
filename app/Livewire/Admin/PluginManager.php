@@ -8,6 +8,8 @@ use App\Services\PluginManager as PluginService;
 class PluginManager extends Component
 {
     public $successMessage = '';
+    public $showDetailsModal = false;
+    public $selectedPlugin = null;
 
     public function toggle($key)
     {
@@ -26,6 +28,19 @@ class PluginManager extends Component
         
         // Dispatch browser event for UI feedback
         $this->dispatch('plugin-toggled');
+    }
+
+    public function viewDetails($key)
+    {
+        $manager = app(PluginService::class);
+        $this->selectedPlugin = $manager->getPlugin($key);
+        $this->showDetailsModal = true;
+    }
+
+    public function closeDetailsModal()
+    {
+        $this->showDetailsModal = false;
+        $this->selectedPlugin = null;
     }
 
     public function render()

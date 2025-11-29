@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class FlashSale extends Model
 {
     protected $fillable = [
-        'product_id',
-        'discount_percentage',
+        'name',
+        'slug',
+        'banner_image',
         'start_time',
         'end_time',
         'is_active',
@@ -20,8 +21,10 @@ class FlashSale extends Model
         'is_active' => 'boolean',
     ];
 
-    public function product()
+    public function products()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsToMany(Product::class)
+                    ->withPivot(['discount_percentage', 'fixed_price'])
+                    ->withTimestamps();
     }
 }

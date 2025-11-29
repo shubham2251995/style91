@@ -55,4 +55,20 @@ class CouponService
     {
         $coupon->increment('used_count');
     }
+
+    public function getPublicCoupons()
+    {
+        return Coupon::where('is_active', true)
+                     ->where('is_public', true)
+                     ->where(function ($query) {
+                         $query->whereNull('expires_at')
+                               ->orWhere('expires_at', '>=', now());
+                     })
+                     ->where(function ($query) {
+                         $query->whereNull('usage_limit')
+                               ->orWhereColumn('used_count', '<', 'usage_limit');
+                     })
+                     ->latest()
+                     ->get();
+    }
 }

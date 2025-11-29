@@ -27,8 +27,13 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($plugins as $plugin)
                 <div class="bg-white/5 border {{ $plugin['active'] ? 'border-brand-accent/50 bg-brand-accent/5' : 'border-white/10' }} rounded-xl p-4 transition-all hover:border-white/30">
-                    <div class="flex justify-between items-start mb-2">
-                        <h4 class="font-bold text-lg">{{ $plugin['name'] }}</h4>
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center gap-2">
+                            @if(!empty($plugin['icon']))
+                                <span class="text-2xl">{{ $plugin['icon'] }}</span>
+                            @endif
+                            <h4 class="font-bold text-lg">{{ $plugin['name'] }}</h4>
+                        </div>
                         <div class="relative">
                             {{-- Loading Spinner --}}
                             <div wire:loading wire:target="toggle('{{ $plugin['key'] }}')" 
@@ -58,23 +63,41 @@
                             @endif
                         </div>
                     </div>
-                    <p class="text-xs text-gray-500 font-mono">{{ $plugin['key'] }}</p>
+                    <p class="text-xs text-gray-500 font-mono mb-2">{{ $plugin['key'] }}</p>
                     
-                    @if($plugin['active'])
-                        <div class="mt-3 flex items-center gap-2 text-xs text-green-400">
-                            <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                            ACTIVE
-                        </div>
-                    @else
-                        <div class="mt-3 flex items-center gap-2 text-xs text-gray-600">
-                            <span class="w-2 h-2 rounded-full bg-gray-600"></span>
-                            OFFLINE
-                        </div>
+                    @if(!empty($plugin['description']))
+                        <p class="text-sm text-gray-400 mb-3 line-clamp-2">{{ $plugin['description'] }}</p>
                     @endif
+
+                    <div class="flex items-center justify-between">
+                        @if(!empty($plugin['features']) || !empty($plugin['locations']))
+                            <button wire:click="viewDetails('{{ $plugin['key'] }}')" 
+                                    class="text-xs text-brand-accent hover:text-blue-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                View Details
+                            </button>
+                        @endif
+                        
+                        @if($plugin['active'])
+                            <div class="flex items-center gap-2 text-xs text-green-400">
+                                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                                ACTIVE
+                            </div>
+                        @else
+                            <div class="flex items-center gap-2 text-xs text-gray-600">
+                                <span class="w-2 h-2 rounded-full bg-gray-600"></span>
+                                OFFLINE
+                            </div>
+                        @endif
+                    </div>
                 </div>
                 @endforeach
             </div>
         </section>
         @endforeach
     </div>
+
+    @include('livewire.admin.partials.plugin-details-modal')
 </div>

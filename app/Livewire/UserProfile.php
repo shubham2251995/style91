@@ -73,6 +73,10 @@ class UserProfile extends Component
 
     public function render()
     {
-        return view('livewire.user-profile');
+        $coupons = app(\App\Services\CouponService::class)->getPublicCoupons();
+        
+        return view('livewire.user-profile', [
+            'coupons' => $coupons
+        ]);
     }
 }

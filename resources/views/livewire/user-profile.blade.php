@@ -203,6 +203,44 @@
                         </div>
                     </div>
                 @endif
+                {{-- Available Coupons --}}
+                @if($coupons->isNotEmpty())
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-sm">
+                        <h3 class="text-xl font-black text-white mb-4">🎟️ Available Coupons</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            @foreach($coupons as $coupon)
+                                <div class="bg-gradient-to-r from-brand-accent/20 to-transparent border border-brand-accent/30 rounded-lg p-4 relative overflow-hidden group">
+                                    <div class="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition">
+                                        <svg class="w-16 h-16 text-brand-accent" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z" clip-rule="evenodd"/>
+                                            <path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="relative z-10">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <span class="bg-brand-accent text-brand-black text-xs font-black px-2 py-1 rounded uppercase tracking-wider">
+                                                {{ $coupon->code }}
+                                            </span>
+                                            @if($coupon->expires_at)
+                                                <span class="text-xs text-gray-400">Exp: {{ $coupon->expires_at->format('M d') }}</span>
+                                            @endif
+                                        </div>
+                                        <div class="text-white font-bold text-lg mb-1">
+                                            @if($coupon->type === 'percentage')
+                                                {{ $coupon->value }}% OFF
+                                            @else
+                                                ₹{{ number_format($coupon->value) }} OFF
+                                            @endif
+                                        </div>
+                                        @if($coupon->minimum_order > 0)
+                                            <p class="text-xs text-gray-400">Min. Order: ₹{{ number_format($coupon->minimum_order) }}</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

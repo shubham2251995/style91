@@ -10,13 +10,19 @@ class Plugin extends Model
         'key',
         'group',
         'name',
+        'description',
+        'features',
+        'locations',
+        'icon',
         'active',
         'config'
     ];
 
     protected $casts = [
         'active' => 'boolean',
-        'config' => 'array'
+        'config' => 'array',
+        'features' => 'array',
+        'locations' => 'array'
     ];
 
     /**
