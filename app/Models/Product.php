@@ -113,7 +113,16 @@ class Product extends Model
 
     public function getActiveFlashSaleAttribute()
     {
-        return $this->flashSales()->first();
+        try {
+            return $this->flashSales()->first();
+        } catch (\Exception $e) {
+            // Return null if table doesn't exist (migration not run yet)
+            \Log::warning('Flash sale table missing or error accessing flash sales', [
+                'product_id' => $this->id,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
     }
 
     public function orderItems()

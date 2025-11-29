@@ -46,7 +46,7 @@
 
                         <!-- Product Info -->
                         <div class="p-4">
-                            <a href="{{ route('product.show', $wishlist->product->slug) }}" class="font-bold text-gray-900 hover:text-brand-accent line-clamp-2 mb-2">
+                            <a href="{{ route('product', $wishlist->product->slug) }}" class="font-bold text-gray-900 hover:text-brand-accent line-clamp-2 mb-2">
                                 {{ $wishlist->product->name }}
                             </a>
                             <div class="text-xl font-bold text-gray-900 mb-3">

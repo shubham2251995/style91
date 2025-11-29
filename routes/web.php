@@ -126,24 +126,9 @@ Route::post('/logout', function () {
     return redirect('/');
 })->name('logout');
 
-Route::get('/clear-cache', function() {
-    Artisan::call('optimize:clear');
-    return 'Cache Cleared! <a href="/">Go Home</a>';
-});
+// Routes removed for production security
+// Use SSH or Artisan commands for cache clearing and migrations
 
-Route::get('/system/migrate', function() {
-    // Protect with APP_KEY to prevent unauthorized access
-    if (request('key') !== config('app.key')) {
-        abort(403, 'Unauthorized. Please provide the correct APP_KEY as the "key" query parameter.');
-    }
-
-    try {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-        return '<pre>' . \Illuminate\Support\Facades\Artisan::output() . '</pre><br>Migrations Completed! <a href="/">Go Home</a>';
-    } catch (\Exception $e) {
-        return 'Migration Failed: ' . $e->getMessage();
-    }
-});
 
 Route::get('/debug-auth', function () {
     return [
