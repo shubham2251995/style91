@@ -49,7 +49,7 @@
                 <h4 class="text-brand-500 font-bold text-lg mb-4 uppercase">Shop</h4>
                 <ul class="space-y-2">
                     <li><a href="{{ route('new-arrivals') }}" class="text-gray-400 hover:text-brand-500 transition">New Arrivals</a></li>
-                    <li><a href="{{ route('products.index') }}" class="text-gray-400 hover:text-brand-500 transition">All Products</a></li>
+                    <li><a href="{{ route('search') }}" class="text-gray-400 hover:text-brand-500 transition">All Products</a></li>
                     <li><a href="{{ route('sale') }}" class="text-brand-500 hover:text-accent-500 transition font-bold">Sale 🔥</a></li>
                     <li><a href="{{ route('vault') }}" class="text-electric-500 hover:text-electric-400 transition">Exclusive</a></li>
                 </ul>

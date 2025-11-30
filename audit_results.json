@@ -1,0 +1,7 @@
+{
+    "errors": [],
+    "warnings": [
+        "[Undefined Route] emails\\password-reset.blade.php: route('password.reset') not found."
+    ],
+    "defined_routes": 125
+}

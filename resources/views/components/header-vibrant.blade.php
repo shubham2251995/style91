@@ -42,7 +42,7 @@
                         New Arrivals
                         <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-brand-500 to-accent-500 group-hover:w-full transition-all duration-300"></span>
                     </a>
-                    <a href="{{ route('products.index') }}" class="relative group text-white hover:text-brand-500 transition-colors font-bold text-sm uppercase">
+                    <a href="{{ route('search') }}" class="relative group text-white hover:text-brand-500 transition-colors font-bold text-sm uppercase">
                         Shop All
                         <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-brand-500 to-accent-500 group-hover:w-full transition-all duration-300"></span>
                     </a>
@@ -76,7 +76,7 @@
                     @endauth
 
                     {{-- Cart --}}
-                    <a href="{{ route('cart.index') }}" class="relative text-white hover:text-brand-500 transition-colors p-2 group">
+                    <a href="{{ route('cart') }}" class="relative text-white hover:text-brand-500 transition-colors p-2 group">
                         <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
@@ -151,7 +151,7 @@
 
             <nav class="py-4">
                 <a href="{{ route('new-arrivals') }}" class="block px-6 py-3 text-white hover:bg-brand-500/20 hover:text-brand-500 transition font-medium">New Arrivals</a>
-                <a href="{{ route('products.index') }}" class="block px-6 py-3 text-white hover:bg-brand-500/20 hover:text-brand-500 transition font-medium">Shop All</a>
+                <a href="{{ route('search') }}" class="block px-6 py-3 text-white hover:bg-brand-500/20 hover:text-brand-500 transition font-medium">Shop All</a>
                 <a href="{{ route('sale') }}" class="block px-6 py-3 text-brand-500 hover:bg-brand-500/20 transition font-bold">🔥 Sale - 50% OFF</a>
                 <a href="{{ route('vault') }}" class="block px-6 py-3 text-electric-500 hover:bg-electric-500/20 transition font-medium">Exclusive Drops</a>
                 <a href="{{ route('track-order') }}" class="block px-6 py-3 text-white hover:bg-brand-500/20 hover:text-brand-500 transition font-medium">Track Order</a>

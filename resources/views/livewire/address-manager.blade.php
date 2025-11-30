@@ -11,6 +11,10 @@
             </button>
         </div>
 
+    @if($addresses->count() > 0)
+        <div class="grid gap-4 md:grid-cols-2">
+            @foreach($addresses as $address)
+                <div class="border border-gray-200 rounded-lg p-4 relative {{ $address->is_default ? 'border-brand-accent bg-yellow-50/50' : '' }}">
                     @if($address->label)
                         <p class="text-xs text-gray-500 uppercase font-bold mb-1">{{ $address->label }}</p>
                     @endif
@@ -47,13 +51,13 @@
                         </button>
                     </div>
                 </div>
-                @endforeach
-            </div>
-        @else
-            <div class="text-center py-12 bg-gray-50 rounded-lg">
-                <p class="text-gray-500 mb-4">No saved addresses</p>
-            </div>
-        @endif
+            @endforeach
+        </div>
+    @else
+        <div class="text-center py-12 bg-gray-50 rounded-lg">
+            <p class="text-gray-500 mb-4">No saved addresses</p>
+        </div>
+    @endif
     @else
         <!-- Address Form -->
         <div class="bg-white border border-gray-200 rounded-lg p-6">

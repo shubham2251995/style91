@@ -244,5 +244,4 @@ Route::controller(PageController::class)->group(function () {
     Route::get('/shipping', 'show')->defaults('page', 'shipping')->name('shipping');
     Route::get('/careers', 'show')->defaults('page', 'careers')->name('careers');
     Route::get('/track-order', 'show')->defaults('page', 'track-order')->name('track-order');
-    Route::get('/gift-cards', 'show')->defaults('page', 'gift-cards')->name('gift-cards');
 });

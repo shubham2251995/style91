@@ -7,7 +7,7 @@
                 <div class="text-6xl mb-4">🔓</div>
                 <h2 class="text-2xl font-bold text-green-500 mb-2">ACCESS GRANTED</h2>
                 <p class="text-gray-400 mb-6">Welcome, Holder #8821.</p>
-                <a href="{{ route('vote') }}" class="block w-full bg-green-600 text-black font-bold py-3 rounded-lg hover:bg-green-500 transition-colors">
+                <a href="{{ route('plugin.vote') }}" class="block w-full bg-green-600 text-black font-bold py-3 rounded-lg hover:bg-green-500 transition-colors">
                     Enter DAO
                 </a>
             </div>
