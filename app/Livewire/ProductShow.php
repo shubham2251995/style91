@@ -33,11 +33,20 @@ class ProductShow extends Component
 
     public function mount($slug)
     {
-        $this->product = Product::with(['category', 'images', 'variants', 'reviews.user'])->where('slug', $slug)->firstOrFail();
+        try {
+            $this->product = Product::with(['category', 'images', 'variants', 'reviews.user'])->where('slug', $slug)->firstOrFail();
+        } catch (\Exception $e) {
+            abort(404, 'Product not found');
+        }
         
-        // AI Stylist
-        $stylist = app(\App\Services\AiStylistService::class);
-        $this->completeTheLookProducts = $stylist->completeTheLook($this->product);
+        // AI Stylist - handle gracefully if service unavailable
+        try {
+            $stylist = app(\App\Services\AiStylistService::class);
+            $this->completeTheLookProducts = $stylist->completeTheLook($this->product);
+        } catch (\Exception $e) {
+            Log::warning('AI Stylist service failed: ' . $e->getMessage());
+            $this->completeTheLookProducts = [];
+        }
         
         // Track recently viewed
         $viewed = session('recently_viewed', []);
