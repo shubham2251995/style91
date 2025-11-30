@@ -1,6 +1,12 @@
-<?php
 
-use Illuminate\Support\Facades\Route;
+// Installer Routes
+Route::controller(App\Http\Controllers\InstallerController::class)->prefix('install')->group(function () {
+    Route::get('/', 'index')->name('install.index');
+    Route::get('/requirements', 'checkRequirements')->name('install.requirements');
+    Route::post('/test-db', 'testDatabase')->name('install.test-db');
+    Route::post('/run', 'install')->name('install.run');
+    Route::post('/create-admin', 'createAdmin')->name('install.create-admin');
+});
 
 use App\Livewire\Home;
 use App\Livewire\ProductShow;
