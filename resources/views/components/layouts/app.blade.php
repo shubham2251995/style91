@@ -73,7 +73,9 @@ try {
     <meta name="description" content="{{ $metaDescription }}">
     <meta name="keywords" content="{{ $metaKeywords }}">
     
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    {{-- Tailwind CSS CDN for Shared Hosting --}}
+    <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Open Graph / Facebook -->
     
@@ -142,6 +144,30 @@ try {
         /* Hide scrollbar for Chrome, Safari and Opera */
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .scrollbar-hide {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            black: 'var(--brand-black)',
+                            white: 'var(--brand-white)',
+                            gray: 'var(--brand-gray)',
+                            accent: 'var(--brand-accent)',
+                            dark: 'var(--brand-dark)',
+                        }
                     },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -150,6 +176,7 @@ try {
             }
         }
     </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @livewireStyles
 </head>
 <body class="font-sans antialiased bg-white text-brand-black" x-data="{ mobileMenuOpen: false, searchOpen: false }">
