@@ -37,7 +37,7 @@ use App\Livewire\StreetwearTV\Show as TVShow;
 use App\Livewire\Editorial\Index as EditorialIndex;
 use App\Livewire\Editorial\Show as EditorialShow;
 
-Route::get('/', Home::class)->name('home');
+Route::get('/', [Home::class, 'render'])->name('home');
 
 // SEO Routes
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index']);

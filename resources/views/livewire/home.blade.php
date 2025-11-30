@@ -1,6 +1,6 @@
 <x-layouts.app-vibrant>
-    <div>
-        @foreach($sections as $section)
+<div>
+    @foreach($sections as $section)
             <div class="mb-12" wire:key="section-{{ $section->id }}">
                 @if($section->type === 'hero')
                     @include('components.sections.hero', ['section' => $section])

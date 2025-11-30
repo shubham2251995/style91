@@ -1,13 +1,33 @@
     @php
 $siteSettings = null;
+$headerLinks = [];
+$footerColumns = [];
+$seoTagsArray = [];
+$seoSchema = '';
+
 try {
-    $seoService = new \App\Services\SeoService();
-    $model = $product ?? null;
-    $seoTagsArray = $seoService->generateTags($model);
-    $seoSchema = $seoService->generateSchema($model);
-    $navService = new \App\Services\NavigationService();
-    $headerLinks = $navService->getHeader();
-    $footerColumns = $navService->getFooter();
+    // SEO Service
+    try {
+        $seoService = new \App\Services\SeoService();
+        $model = $product ?? null;
+        $seoTagsArray = $seoService->generateTags($model);
+        $seoSchema = $seoService->generateSchema($model);
+    } catch (\Exception $e) {
+        // SEO service failed, use defaults
+        $seoTagsArray = [];
+        $seoSchema = '';
+    }
+    
+    // Navigation Service
+    try {
+        $navService = new \App\Services\NavigationService();
+        $headerLinks = $navService->getHeader();
+        $footerColumns = $navService->getFooter();
+    } catch (\Exception $e) {
+        // Navigation failed, use empty arrays
+        $headerLinks = [];
+        $footerColumns = [];
+    }
 
     // Site Settings Service - handle pre-installation gracefully
     try {
@@ -32,7 +52,7 @@ try {
     $ogUrl = $seoTagsArray['url'] ?? url()->current();
     $ogType = $seoTagsArray['type'] ?? 'website';
 } catch (\Exception $e) {
-    // Fallback for installation or DB issues
+    // Complete fallback for all initialization failures
     $seoTagsArray = [];
     $seoSchema = '';
     $headerLinks = [];
@@ -122,31 +142,6 @@ try {
         /* Hide scrollbar for Chrome, Safari and Opera */
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
-        }
-        /* Hide scrollbar for IE, Edge and Firefox */
-        .scrollbar-hide {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-        }
-    </style>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Outfit', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        brand: {
-                            black: 'var(--brand-black)',
-                            white: 'var(--brand-white)',
-                            gray: 'var(--brand-gray)',
-                            accent: 'var(--brand-accent)',
-                            dark: 'var(--brand-dark)',
-                        }
                     },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',

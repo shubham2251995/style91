@@ -32,13 +32,20 @@ class Home extends Component
             $sections = collect([]);
         }
 
-        return view('livewire.home', [
-            'sections' => $sections,
-            'activeFlashSales' => FlashSale::where('is_active', true)
+        try {
+            $activeFlashSales = FlashSale::where('is_active', true)
                                          ->where('start_time', '<=', now())
                                          ->where('end_time', '>=', now())
                                          ->with('products')
-                                         ->get(),
+                                         ->get();
+        } catch (\Exception $e) {
+            Log::error('Error loading flash sales: ' . $e->getMessage());
+            $activeFlashSales = collect([]);
+        }
+
+        return view('livewire.home', [
+            'sections' => $sections,
+            'activeFlashSales' => $activeFlashSales,
         ]);
     }
 
