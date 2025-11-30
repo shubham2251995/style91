@@ -1,3 +1,6 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
 
 // Installer Routes
 Route::controller(App\Http\Controllers\InstallerController::class)->prefix('install')->group(function () {
@@ -23,13 +26,6 @@ use App\Livewire\Cart;
 use App\Livewire\Checkout;
 
 use App\Livewire\FlexCard;
-
-// Laravel-Based Installer
-Route::get('/install', [App\Http\Controllers\InstallerController::class, 'index'])->name('installer');
-Route::get('/install/check-requirements', [App\Http\Controllers\InstallerController::class, 'checkRequirements']);
-Route::post('/install/test-database', [App\Http\Controllers\InstallerController::class, 'testDatabase'])->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
-Route::post('/install/run', [App\Http\Controllers\InstallerController::class, 'install'])->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
-Route::post('/install/create-admin', [App\Http\Controllers\InstallerController::class, 'createAdmin'])->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
 use App\Livewire\Wardrobe\Index as WardrobeIndex;
 use App\Livewire\MysteryBox\Index as MysteryBoxIndex;
