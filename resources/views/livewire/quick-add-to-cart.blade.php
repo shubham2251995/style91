@@ -2,6 +2,7 @@
      @reset-button.window="if ($event.detail.id == {{ $productId }}) { setTimeout(() => added = false, 2000) }">
     <button 
         wire:click="addToCart"
+        @click="$dispatch('open-cart')"
         :disabled="added"
         class="w-full bg-brand-dark text-white font-bold py-2 rounded-lg hover:bg-opacity-90 transition text-sm disabled:bg-green-500"
     >

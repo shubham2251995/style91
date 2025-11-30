@@ -25,8 +25,18 @@ class CheckOnboardingCompleted
             return $next($request);
         }
 
-        // Skip if accessing API or admin routes
-        if ($request->is('api/*') || $request->is('admin/*')) {
+        // CRITICAL FIX: Skip onboarding for admin users
+        if ($user->role === 'admin') {
+            return $next($request);
+        }
+
+        // Skip if accessing admin routes (using route name prefix)
+        if ($request->routeIs('admin.*') || $request->routeIs('admin.login')) {
+            return $next($request);
+        }
+
+        // Skip API routes
+        if ($request->is('api/*')) {
             return $next($request);
         }
 

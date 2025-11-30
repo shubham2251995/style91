@@ -1,7 +1,11 @@
 <div x-data="{ 
-    open: @entangle('isOpen'),
-    toggle() { this.open = !this.open }
+    open: false,
+    toggle() { this.open = !this.open },
+    close() { this.open = false }
 }" 
+x-init="open = false"
+@open-cart.window="open = true"
+@close-cart.window="open = false"
 @keydown.window.escape="open = false"
 class="relative z-[100]">
 

@@ -9,25 +9,11 @@ use Illuminate\Support\Facades\Log;
 
 class CartDrawer extends Component
 {
-    public $isOpen = false;
     public $promoCode = '';
     
     protected $listeners = [
-        'openCart' => 'open',
-        'closeCart' => 'close',
         'cartUpdated' => '$refresh',
-        'productAddedToCart' => 'open'
     ];
-
-    public function open()
-    {
-        $this->isOpen = true;
-    }
-
-    public function close()
-    {
-        $this->isOpen = false;
-    }
 
     public function getCartItemsProperty()
     {
