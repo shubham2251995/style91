@@ -9,10 +9,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Profile Information
+            // Profile Information (bio and phone already added by 2025_11_29_042100)
             $table->string('avatar')->nullable()->after('email');
-            $table->text('bio')->nullable()->after('avatar');
-            $table->string('phone')->nullable()->after('bio');
+            // $table->text('bio')->nullable()->after('avatar');  // Already exists
+            // $table->string('phone')->nullable()->after('bio');  // Already exists
             $table->date('date_of_birth')->nullable()->after('phone');
             $table->enum('gender', ['male', 'female', 'other', 'prefer_not_to_say'])->nullable()->after('date_of_birth');
             
@@ -46,8 +46,8 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn([
                 'avatar',
-                'bio',
-                'phone',
+                // 'bio',  // Managed by 2025_11_29_042100
+                // 'phone',  // Managed by 2025_11_29_042100
                 'date_of_birth',
                 'gender',
                 'onboarding_completed',

@@ -175,7 +175,7 @@
 
         async function checkRequirements() {
             try {
-                const response = await fetch('/install/check-requirements');
+                const response = await fetch('/install/requirements');
                 const data = await response.json();
                 
                 const list = document.getElementById('requirementsList');
@@ -214,7 +214,7 @@
             };
 
             try {
-                const response = await fetch('/install/test-database', {
+                const response = await fetch('/install/test-db', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken},
                     body: JSON.stringify(data)
