@@ -298,4 +298,3 @@
         <livewire:review-form :productId="$product->id" />
     </div>
 </div>
-```
