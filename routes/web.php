@@ -36,6 +36,12 @@ use App\Livewire\Editorial\Index as EditorialIndex;
 use App\Livewire\Editorial\Show as EditorialShow;
 
 Route::get('/', Home::class)->name('home');
+
+// SEO Routes
+Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index']);
+Route::get('/robots.txt', function() {
+    return response()->view('robots')->header('Content-Type', 'text/plain');
+});
 Route::get('/checkout/address', \App\Livewire\Checkout\CheckoutAddress::class)->name('checkout.address');
 Route::get('/checkout/payment', \App\Livewire\Checkout\CheckoutPayment::class)->name('checkout.payment');
 Route::any('/payment/callback', [App\Http\Controllers\PaymentController::class, 'callback'])->name('payment.callback');
@@ -208,6 +214,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/reviews', \App\Livewire\Admin\ReviewManager::class)->name('review-manager');
     Route::get('/inventory', \App\Livewire\Admin\InventoryManager::class)->name('inventory-manager');
     Route::get('/customers', \App\Livewire\Admin\CustomerManager::class)->name('customer-manager');
+    Route::get('/users', \App\Livewire\Admin\UserManager::class)->name('user-manager');
     Route::get('/variants', \App\Livewire\Admin\VariantManager::class)->name('variant-manager');
     Route::get('/bundles', \App\Livewire\Admin\BundleManager::class)->name('bundle-manager');
     Route::get('/returns', \App\Livewire\Admin\ReturnManager::class)->name('return-manager');

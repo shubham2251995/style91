@@ -276,72 +276,6 @@ try {
                             Logout
                         </button>
                     </form>
-                </div>
-            @endauth
-        </div>
-    </div>
-
-    <!-- Header -->
-    <header class="fixed top-0 left-0 w-full z-50 bg-white border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <!-- Mobile Menu Button (Connected) -->
-                <button type="button" @click="mobileMenuOpen = true" class="md:hidden text-brand-dark hover:text-brand-accent p-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                    </svg>
-                </button>
-                <a href="{{ route('home') }}" class="font-black text-xl md:text-2xl tracking-tighter text-brand-black hover:text-brand-accent transition-colors duration-300">
-                    @if(isset($siteLogo) && $siteLogo)
-                        <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="h-8 md:h-10 w-auto" loading="lazy">
-                    @else
-                        {{ $siteName }}<span class="text-brand-accent">.</span>
-                    @endif
-                </a>
-            </div>
-
-            <!-- Gender Toggle (Desktop) -->
-            <div class="hidden md:flex items-center gap-4 ml-8">
-                    </svg>
-                </a>
-
-                <!-- Wishlist -->
-                @auth
-                    <a href="{{ route('wishlist') }}" class="text-brand-dark hover:text-brand-accent transition hidden md:block">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                        </svg>
-                    </a>
-
-                    <!-- Account -->
-                    <a href="{{ route('account') }}" class="text-brand-dark hover:text-brand-accent transition hidden md:block">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                        </svg>
-                    </a>
-                @endauth
-
-                <!-- Cart -->
-                <!-- Cart -->
-                <button type="button" @click="Livewire.dispatch('openCart')" class="text-brand-dark hover:text-brand-accent relative transition group">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 group-hover:scale-110 transition-transform">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 5c.07.277-.029.561-.225.761A1.125 1.125 0 0119.66 15H4.34a1.125 1.125 0 01-.894-1.732l1.263-5a1.125 1.125 0 011.092-.852H18.57c.47 0 .91.247 1.092.852z" />
-                    </svg>
-                    @if(app(\App\Services\CartService::class)->count() > 0)
-                        <span class="absolute -top-2 -right-2 bg-brand-accent text-brand-black text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">
-                            {{ app(\App\Services\CartService::class)->count() }}
-                        </span>
-                    @endif
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="pt-16 md:pt-20 pb-24 md:pb-12 min-h-screen w-full max-w-7xl mx-auto relative">
-        {{ $slot }}
-    </main>
-
     <!-- Desktop Background (Subtle) -->
     <div class="fixed inset-0 -z-10 bg-brand-gray hidden md:block"></div>
 
@@ -477,60 +411,8 @@ try {
         </div>
     </div>
 
-    <!-- Header -->
-    <header class="fixed top-0 left-0 w-full z-50 bg-white border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <!-- Mobile Menu Button (Connected) -->
-                <button type="button" @click="mobileMenuOpen = true" class="md:hidden text-brand-dark hover:text-brand-accent p-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                    </svg>
-                </button>
-                <a href="{{ route('home') }}" class="font-black text-xl md:text-2xl tracking-tighter text-brand-black hover:text-brand-accent transition-colors duration-300">
-                    @if(isset($siteLogo) && $siteLogo)
-                        <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="h-8 md:h-10 w-auto" loading="lazy">
-                    @else
-                        {{ $siteName }}<span class="text-brand-accent">.</span>
-                    @endif
-                </a>
-            </div>
-
-            <!-- Gender Toggle (Desktop) -->
-            <div class="hidden md:flex items-center gap-4 ml-8">
-                    </svg>
-                </a>
-
-                <!-- Wishlist -->
-                @auth
-                    <a href="{{ route('wishlist') }}" class="text-brand-dark hover:text-brand-accent transition hidden md:block">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                        </svg>
-                    </a>
-
-                    <!-- Account -->
-                    <a href="{{ route('account') }}" class="text-brand-dark hover:text-brand-accent transition hidden md:block">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                        </svg>
-                    </a>
-                @endauth
-
-                <!-- Cart -->
-                <a href="{{ route('cart') }}" class="text-brand-dark hover:text-brand-accent relative transition group">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 group-hover:scale-110 transition-transform">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 5c.07.277-.029.561-.225.761A1.125 1.125 0 0119.66 15H4.34a1.125 1.125 0 01-.894-1.732l1.263-5a1.125 1.125 0 011.092-.852H18.57c.47 0 .91.247 1.092.852z" />
-                    </svg>
-                    @if(app(\App\Services\CartService::class)->count() > 0)
-                        <span class="absolute -top-2 -right-2 bg-brand-accent text-brand-black text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">
-                            {{ app(\App\Services\CartService::class)->count() }}
-                        </span>
-                    @endif
-                </a>
-            </div>
-        </div>
-    </header>
+    {{-- Vibrant Youth-Centric Header --}}
+    @include('components.header-vibrant')
 
     <!-- Main Content -->
     <main class="pt-16 md:pt-20 pb-24 md:pb-12 min-h-screen w-full max-w-7xl mx-auto relative">

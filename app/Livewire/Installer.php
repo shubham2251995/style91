@@ -36,6 +36,8 @@ class Installer extends Component
     ];
 
     public $status = [];
+    public $migration_progress = 0;
+    public $migration_message = 'Preparing database...';
 
     public function mount()
     {
@@ -138,41 +140,57 @@ class Installer extends Component
         ini_set('memory_limit', '512M'); // Increase memory limit
         
         try {
+            $this->migration_progress = 10;
+            $this->migration_message = 'Clearing caches...';
             $this->manualConfigClear();
+            
+            $this->migration_progress = 20;
+            $this->migration_message = 'Checking existing database...';
             
             // Check if migrations already run
             $tablesExist = false;
             try {
-                // Check if users table exists (indicates migrations already ran)
                 DB::connection('mysql')->table('users')->limit(1)->count();
                 $tablesExist = true;
             } catch (\Exception $e) {
-                // Table doesn't exist, we need to migrate
                 $tablesExist = false;
             }
             
             if ($tablesExist) {
-                // Migrations already completed, just move to next step
+                // Migrations already completed
                 session()->flash('migration_success', 'Database already migrated! Moving to next step...');
                 $this->step = 5;
+                $this->initializePlugins(); // Ensure plugins are initialized
                 return;
             }
             
-            // Run migrations
+            $this->migration_progress = 30;
+            $this->migration_message = 'Running database migrations...';
+            
+            // Run migrations with progress tracking
             \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--force' => true]);
             
-            // Run seeders (optional - comment out if causing issues)
+            $this->migration_progress = 70;
+            $this->migration_message = 'Seeding initial data...';
+            
+            // Run seeders (optional)
             try {
                 \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
             } catch (\Exception $seedError) {
-                // Seeding is optional, log error but continue
                 \Illuminate\Support\Facades\Log::warning('Seeding failed: ' . $seedError->getMessage());
             }
             
+            $this->migration_progress = 90;
+            $this->migration_message = 'Initializing plugin system...';
+            
+            // Initialize plugins
+            $this->initializePlugins();
+            
+            $this->migration_progress = 100;
+            $this->migration_message = 'Database setup complete!';
+            
             // Force step increment
             $this->step = 5;
-            
-            // Flash success message
             session()->flash('migration_success', 'Database migrated successfully!');
             
         } catch (\Exception $e) {
@@ -182,13 +200,51 @@ class Installer extends Component
             if (str_contains($errorMessage, 'Duplicate') || 
                 str_contains($errorMessage, 'already exists') ||
                 str_contains($errorMessage, 'Base table or view already exists')) {
-                // Tables already exist, just proceed
                 session()->flash('migration_success', 'Database tables already exist. Proceeding...');
                 $this->step = 5;
+                $this->initializePlugins();
             } else {
-                $this->addError('migration', 'Migration failed: ' . $errorMessage);
+                $this->migration_progress = 0;
+                $this->migration_message = 'Migration failed';
+                $this->addError('migration', 'Migration failed: ' . $this->getFriendlyMigrationError($errorMessage));
                 \Illuminate\Support\Facades\Log::error('Migration Error: ' . $errorMessage);
             }
+        }
+    }
+
+    /**
+     * Make migration errors more user-friendly
+     */
+    protected function getFriendlyMigrationError($message)
+    {
+        if (str_contains($message, 'max_allowed_packet')) {
+            return 'Database packet size too small. Contact your host to increase max_allowed_packet.';
+        } elseif (str_contains($message, 'Syntax error')) {
+            return 'SQL syntax error. Your MySQL version might be outdated (requires 5.7+).';
+        } elseif (str_contains($message, 'timeout') || str_contains($message, 'timed out')) {
+            return 'Database operation timed out. Try again or contact your hosting provider.';
+        } elseif (str_contains($message, 'Deadlock')) {
+            return 'Database deadlock detected. Please try again.';
+        } elseif (str_contains($message, 'Access denied')) {
+            return 'Database user lacks required permissions. Grant ALL PRIVILEGES on database.';
+        }
+        
+        // Truncate long error messages
+        return strlen($message) > 200 ? substr($message, 0, 200) . '...' : $message;
+    }
+
+    /**
+     * Initialize plugin system after migrations
+     */
+    protected function initializePlugins()
+    {
+        try {
+            // This will create plugin records in database if they don't exist
+            $pluginManager = app(\App\Services\PluginManager::class);
+            $pluginManager->loadPlugins();
+        } catch (\Exception $e) {
+            // Not critical, log and continue
+            \Log::warning('Plugin initialization warning: ' . $e->getMessage());
         }
     }
 
@@ -350,20 +406,58 @@ class Installer extends Component
      */
     protected function runPostInstallationTasks()
     {
-        // 1. Create storage link
-        $this->createStorageLink();
+        $tasks = [
+            'storage_link' => ['name' => 'Creating storage symlink', 'method' => 'createStorageLink'],
+            'caches' => ['name' => 'Clearing caches', 'method' => 'manualCacheClear'],
+            'production_caches' => ['name' => 'Generating production caches', 'method' => 'generateProductionCaches'],
+            'directories' => ['name' => 'Creating required directories', 'method' => 'ensureDirectoriesExist'],
+            'permissions' => ['name' => 'Checking file permissions', 'method' => 'checkFilePermissions'],
+            'htaccess' => ['name' => 'Verifying .htaccess', 'method' => 'verifyHtaccess'],
+        ];
+
+        foreach ($tasks as $task) {
+            try {
+                $this->{$task['method']}();
+            } catch (\Exception $e) {
+                \Log::warning("Post-install task '{$task['name']}' failed: " . $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Verify .htaccess exists and is properly configured
+     */
+    protected function verifyHtaccess()
+    {
+        $htaccessPath = public_path('.htaccess');
         
-        // 2. Clear all caches
-        $this->manualCacheClear();
-        
-        // 3. Generate optimized caches for production
-        $this->generateProductionCaches();
-        
-        // 4. Check and create required directories
-        $this->ensureDirectoriesExist();
-        
-        // 5. Set proper file permissions (info only, actual changing may fail)
-        $this->checkFilePermissions();
+        if (!file_exists($htaccessPath)) {
+            // Create basic .htaccess if missing
+            $htaccessContent = <<<'HTACCESS'
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+HTACCESS;
+            @file_put_contents($htaccessPath, $htaccessContent);
+        }
     }
 
     /**
