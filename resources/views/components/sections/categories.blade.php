@@ -4,7 +4,7 @@
     @if($title)
         <h3 class="font-bold text-lg mb-4 text-brand-dark">{{ $title }}</h3>
     @endif
-    <div class="grid grid-cols-4 gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         @foreach($content['categories'] ?? [] as $cat)
             <a href="{{ $cat['url'] ?? '#' }}" class="flex flex-col items-center gap-2">
                 <div class="w-16 h-16 rounded-full bg-white border-2 border-brand-accent p-1">

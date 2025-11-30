@@ -9,6 +9,7 @@
     {{-- Alpine.js --}}
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
 <body class="bg-black text-white antialiased" x-data="{ mobileMenuOpen: false, searchOpen: false }">
@@ -20,7 +21,7 @@
     @include('components.header-vibrant')
 
     {{-- Main Content --}}
-    <main class="min-h-screen">
+    <main class="min-h-screen pt-[104px] md:pt-[120px] pb-16 px-4 md:px-6 lg:px-8">
         {{ $slot }}
     </main>
 

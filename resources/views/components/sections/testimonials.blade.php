@@ -41,7 +41,7 @@
         @endif
 
         {{-- Trust Badges --}}
-        <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+        <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             <div class="text-center">
                 <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
                     <svg class="w-8 h-8 text-green-400" fill="currentColor" viewBox="0 0 20 20">

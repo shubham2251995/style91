@@ -3,7 +3,7 @@
         @scroll.window="scrolled = window.scrollY > 50">
     
     {{-- Promo Bar --}}
-    <div class="bg-gradient-to-r from-brand-500 to-accent-500 text-black py-2 px-4 text-center font-bold text-sm animate-pulse-fast">
+    <div class="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 text-black py-2 px-4 text-center font-bold text-sm">
         <div class="flex items-center justify-center gap-2">
             <svg class="w-4 h-4 animate-bounce" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"></path>
@@ -17,7 +17,7 @@
 
     {{-- Main Header --}}
     <div class="transition-all duration-300"
-         :class="scrolled ? 'bg-black/95 backdrop-blur-xl shadow-glow-yellow' : 'bg-black/80 backdrop-blur-md'">
+         :class="scrolled ? 'bg-gray-900/95 backdrop-blur-xl shadow-xl shadow-yellow-500/20' : 'bg-gradient-to-r from-gray-900 via-black to-gray-900 backdrop-blur-md'">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16 md:h-20">
                 
@@ -174,5 +174,3 @@
     </div>
 </header>
 
-{{-- Spacer to prevent content hiding under fixed header --}}
-<div class="h-[112px] md:h-[120px]"></div>

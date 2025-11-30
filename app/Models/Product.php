@@ -23,6 +23,7 @@ class Product extends Model
         'avg_rating',
         'review_count',
         'is_featured',
+        'is_active',
         'meta_title',
         'meta_description',
         'meta_keywords',
@@ -31,6 +32,7 @@ class Product extends Model
     
     protected $casts = [
         'is_featured' => 'boolean',
+        'is_active' => 'boolean',
         'sold_count' => 'integer',
         'view_count' => 'integer',
         'stock_quantity' => 'integer',

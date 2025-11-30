@@ -1,5 +1,5 @@
 {{-- Hero Banner Section --}}
-<section class="relative min-h-[600px] flex items-center justify-center overflow-hidden">
+<section class="relative min-h-[80vh] md:min-h-[600px] flex items-center justify-center overflow-hidden">
     {{-- Background Image --}}
     @if($section->image_url)
     <div class="absolute inset-0">

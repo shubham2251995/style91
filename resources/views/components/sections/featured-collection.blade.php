@@ -23,7 +23,7 @@
 
         {{-- Products Grid --}}
         @if(isset($section->sectionProducts) && $section->sectionProducts->count() > 0)
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{{ $section->settings['grid_columns'] ?? 4 }} gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-{{ $section->settings['grid_columns'] ?? 4 }} gap-4 md:gap-6">
             @foreach($section->sectionProducts as $product)
             <div class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-brand-accent/50 transition-all duration-300">
                 <a href="{{ route('product', $product->slug) }}" class="block">

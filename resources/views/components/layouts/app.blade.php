@@ -53,6 +53,8 @@ try {
     <meta name="description" content="{{ $metaDescription }}">
     <meta name="keywords" content="{{ $metaKeywords }}">
     
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
     <!-- Open Graph / Facebook -->
     
     @if($seoSchema)
@@ -160,203 +162,20 @@ try {
     <!-- Global Lazy Loader -->
     <div wire:loading class="fixed top-0 left-0 w-full h-1 bg-brand-accent z-[100] animate-pulse-fast"></div>
 
-    <!-- Mobile Menu Drawer (Bewkoof Style) -->
-    <div x-show="mobileMenuOpen" style="display: none;" class="fixed inset-0 z-[60] flex" role="dialog" aria-modal="true">
-        <!-- Overlay -->
-        <div x-show="mobileMenuOpen" 
-             x-transition:enter="transition-opacity ease-linear duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition-opacity ease-linear duration-300"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-black/50 backdrop-blur-sm" 
-             @click="mobileMenuOpen = false"></div>
-
-        <!-- Drawer Panel -->
-        <div x-show="mobileMenuOpen"
-             x-transition:enter="transition ease-in-out duration-300 transform"
-             x-transition:enter-start="-translate-x-full"
-             x-transition:enter-end="translate-x-0"
-             x-transition:leave="transition ease-in-out duration-300 transform"
-             x-transition:leave-start="translate-x-0"
-             x-transition:leave-end="-translate-x-full"
-             class="relative flex-1 flex flex-col max-w-xs w-full bg-white h-full shadow-2xl">
-            
-            <!-- Drawer Header (User Info) -->
-            <div class="p-4 bg-brand-gray border-b border-gray-100 flex items-center justify-between">
-                @auth
-                    <a href="{{ route('account') }}" class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-brand-accent flex items-center justify-center text-brand-black font-bold text-lg">
-                            {{ substr(auth()->user()->name, 0, 1) }}
-                        </div>
-                        <div>
-                            <p class="font-bold text-sm">Hey, {{ explode(' ', auth()->user()->name)[0] }}</p>
-                            <p class="text-xs text-gray-500">View Profile</p>
-                        </div>
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-bold text-sm">Login / Sign Up</p>
-                            <p class="text-xs text-brand-accent font-medium">Get exclusive offers!</p>
-                        </div>
-                    </a>
-                @endauth
-                <button @click="mobileMenuOpen = false" class="p-2 text-gray-400 hover:text-black">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Gender Toggle (Bewkoof Style) -->
-            <div class="flex border-b border-gray-100">
-                <a href="{{ route('search', ['gender' => 'Men']) }}" class="flex-1 py-3 text-center font-bold text-sm uppercase tracking-wider {{ request('gender') == 'Men' ? 'bg-white text-brand-black border-b-2 border-brand-accent' : 'bg-gray-50 text-gray-500' }}">
-                    Men
-                </a>
-                <a href="{{ route('search', ['gender' => 'Women']) }}" class="flex-1 py-3 text-center font-bold text-sm uppercase tracking-wider {{ request('gender') == 'Women' ? 'bg-white text-brand-black border-b-2 border-brand-accent' : 'bg-gray-50 text-gray-500' }}">
-                    Women
-                </a>
-            </div>
-
-            <!-- Menu Items -->
-            <div class="flex-1 overflow-y-auto py-2">
-                <nav class="space-y-1">
-                    @if(isset($headerMenu) && $headerMenu->items->count() > 0)
-                        @foreach($headerMenu->tree() as $item)
-                            <div x-data="{ open: false }">
-                                <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-black">
-                                    <span class="flex items-center gap-3">
-                                        {{-- Optional Icon Logic could go here --}}
-                                        {{ $item->title }}
-                                    </span>
-                                    @if($item->children->count() > 0)
-                                        <svg class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-180': open }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                        </svg>
-                                    @endif
-                                </button>
-                                @if($item->children->count() > 0)
-                                    <div x-show="open" x-collapse class="bg-gray-50 px-4 py-2 space-y-1">
-                                        @foreach($item->children as $child)
-                                            <a href="{{ $child->link }}" class="block px-4 py-2 text-sm text-gray-500 hover:text-brand-accent">{{ $child->title }}</a>
-                                        @endforeach
-                                    </div>
-                                @endif
-                            </div>
-                        @endforeach
-                    @else
-                        <!-- Fallback Links -->
-                        <a href="{{ route('new-arrivals') }}" class="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50">New Arrivals</a>
-                        <a href="{{ route('sale') }}" class="block px-4 py-3 text-sm font-medium text-red-600 hover:bg-gray-50">Sale</a>
-                        <a href="{{ route('track-order') }}" class="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50">Track Order</a>
-                    @endif
-                </nav>
-
-                <!-- Other Links -->
-                <div class="mt-4 border-t border-gray-100 pt-4">
-                    <a href="{{ route('contact') }}" class="block px-4 py-3 text-sm text-gray-500 hover:text-brand-black">Contact Us</a>
-                    <a href="{{ route('track-order') }}" class="block px-4 py-3 text-sm text-gray-500 hover:text-brand-black">Track Order</a>
-                    <a href="{{ route('size-guide') }}" class="block px-4 py-3 text-sm text-gray-500 hover:text-brand-black">Size Guide</a>
-                </div>
-            </div>
-
-            <!-- Drawer Footer -->
-            @auth
-                <div class="p-4 border-t border-gray-100">
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="w-full py-2 text-center text-sm font-bold text-red-500 hover:bg-red-50 rounded-lg transition">
-                            Logout
-                        </button>
-                    </form>
-                </div>
-            @endauth
-        </div>
-    </div>
 
     {{-- Vibrant Youth-Centric Header --}}
     @include('components.header-vibrant')
 
     <!-- Main Content -->
-    <main class="pt-16 md:pt-20 pb-24 md:pb-12 min-h-screen w-full max-w-7xl mx-auto relative">
+    <main class="pt-[104px] md:pt-[120px] pb-16 min-h-screen w-full md:max-w-7xl mx-auto px-4 md:px-6 lg:px-8 relative">
         {{ $slot }}
     </main>
 
     <!-- Desktop Background (Subtle) -->
     <div class="fixed inset-0 -z-10 bg-brand-gray hidden md:block"></div>
 
-    <!-- Desktop Footer -->
-    <footer class="bg-brand-black text-white pt-20 pb-10 hidden md:block">
-        <div class="max-w-7xl mx-auto px-8">
-            <div class="grid grid-cols-4 gap-12 mb-16">
-                <div>
-                    <a href="{{ route('home') }}" class="font-black text-3xl tracking-tighter text-brand-accent mb-6 block">{{ $siteName }}</a>
-                    <p class="text-gray-400 text-sm leading-relaxed">{{ $siteSettings ? $siteSettings->get('footer_text', 'Built for the culture. The ultimate streetwear experience.') : 'Built for the culture. The ultimate streetwear experience.' }}</p>
-                </div>
-                
-                @if(isset($footerMenu1) || isset($footerMenu2))
-                    @if(isset($footerMenu1))
-                        <div>
-                            <h4 class="font-bold text-lg mb-6">{{ $footerMenu1->name }}</h4>
-                            <ul class="space-y-4 text-sm text-gray-400">
-                                @foreach($footerMenu1->items as $link)
-                                <li><a href="{{ $link->link }}" target="{{ $link->target }}" class="hover:text-brand-accent transition-colors">{{ $link->title }}</a></li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                    @if(isset($footerMenu2))
-                        <div>
-                            <h4 class="font-bold text-lg mb-6">{{ $footerMenu2->name }}</h4>
-                            <ul class="space-y-4 text-sm text-gray-400">
-                                @foreach($footerMenu2->items as $link)
-                                <li><a href="{{ $link->link }}" target="{{ $link->target }}" class="hover:text-brand-accent transition-colors">{{ $link->title }}</a></li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                    
-                    {{-- Default Static Column if needed or just keep dynamic --}}
-                    <div>
-                        <h4 class="font-bold text-lg mb-6">Customer Care</h4>
-                        <ul class="space-y-4 text-sm text-gray-400">
-                            <li><a href="{{ route('contact') }}" class="hover:text-brand-accent transition-colors">Contact Us</a></li>
-                            <li><a href="{{ route('shipping') }}" class="hover:text-brand-accent transition-colors">Shipping & Returns</a></li>
-                            <li><a href="{{ route('size-guide') }}" class="hover:text-brand-accent transition-colors">Size Guide</a></li>
-                            <li><a href="{{ route('track-order') }}" class="hover:text-brand-accent transition-colors">Track Order</a></li>
-                        </ul>
-                    </div>
-                @else
-                    @foreach($footerColumns as $column)
-                    <div>
-                        <h4 class="font-bold text-lg mb-6">{{ $column['title'] }}</h4>
-                        <ul class="space-y-4 text-sm text-gray-400">
-                            @foreach($column['links'] as $link)
-                            <li><a href="{{ $link['url'] }}" class="hover:text-brand-accent transition-colors">{{ $link['label'] }}</a></li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    @endforeach
-                @endif
-            </div>
-            
-            <div class="border-t border-white/10 pt-8 flex justify-between items-center text-sm text-gray-500">
-                <p>&copy; {{ date('Y') }} {{ $siteName }}. All rights reserved.</p>
-                <div class="flex gap-6">
-                    <a href="#" class="hover:text-white transition-colors">Instagram</a>
-                    <a href="#" class="hover:text-white transition-colors">Twitter</a>
-                    <a href="#" class="hover:text-white transition-colors">Discord</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    {{-- Vibrant Footer --}}
+    @include('components.footer-vibrant')
 
     <!-- Bottom Navigation (Mobile Only) -->
     <nav class="md:hidden fixed bottom-0 left-0 w-full z-50 pb-safe glass-nav">
