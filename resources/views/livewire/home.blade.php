@@ -31,6 +31,15 @@
                 
                 @elseif($section->type === 'newsletter')
                     @include('components.sections.newsletter', ['section' => $section])
+
+                @elseif($section->type === 'banner')
+                    @include('components.sections.banner', ['content' => $section->content])
+
+                @elseif($section->type === 'categories')
+                    @include('components.sections.categories', ['content' => $section->content, 'title' => $section->title])
+
+                @elseif($section->type === 'featured_products')
+                    @include('components.sections.featured-products', ['content' => $section->content, 'title' => $section->title])
                 @endif
             </div>
         @endforeach

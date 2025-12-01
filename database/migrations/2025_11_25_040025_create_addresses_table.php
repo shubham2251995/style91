@@ -14,11 +14,12 @@ return new class extends Migration
             $table->string('label')->nullable(); // e.g., "Home", "Office"
             $table->string('full_name');
             $table->string('phone');
-            $table->text('address_line1');
-            $table->text('address_line2')->nullable();
+            $table->string('email')->nullable();
+            $table->text('address_line_1');
+            $table->text('address_line_2')->nullable();
             $table->string('city');
             $table->string('state')->nullable();
-            $table->string('zip_code');
+            $table->string('postcode');
             $table->string('country')->default('US');
             $table->boolean('is_default')->default(false);
             $table->timestamps();
