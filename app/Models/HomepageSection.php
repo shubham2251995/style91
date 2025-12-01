@@ -29,6 +29,7 @@ class HomepageSection extends Model
         'is_active' => 'boolean',
         'visibility_rules' => 'array',
         'settings' => 'array',
+        'content' => 'array',
         'order' => 'integer',
     ];
 

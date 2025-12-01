@@ -46,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
                     $view->with('footerMenu2', \App\Models\Menu::where('location', 'footer_2')->with('items')->first());
                 });
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // Log or ignore if DB not ready
         }
         

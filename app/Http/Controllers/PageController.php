@@ -10,7 +10,11 @@ class PageController extends Controller
 {
     public function show($page)
     {
-        $pageModel = Page::where('slug', $page)->where('is_active', true)->first();
+        try {
+            $pageModel = Page::where('slug', $page)->where('is_active', true)->first();
+        } catch (\Throwable $e) {
+            $pageModel = null;
+        }
 
         if (!$pageModel) {
             // Fallback for hardcoded pages if DB is empty or migration not run
