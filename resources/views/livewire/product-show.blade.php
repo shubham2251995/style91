@@ -49,7 +49,7 @@
     </div>
 
     <!-- Smart Disclosure Area -->
-    <div class="relative -mt-12 bg-white rounded-t-[2.5rem] px-6 pt-10 pb-32 md:pb-12 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] min-h-[50vh]"
+    <div class="relative -mt-12 bg-white rounded-t-[2.5rem] px-4 md:px-6 pt-8 pb-24 md:pb-12 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] min-h-[50vh]"
          x-data="{ expanded: false }">
         
         <!-- Drag Handle (Visual Cue) -->
@@ -146,34 +146,40 @@
         @endif
 
         <!-- Primary Action Button (Sticky on Mobile with Safe Area) -->
-        <div class="fixed bottom-16 left-0 w-full p-4 z-40 md:static md:p-0 md:mb-8 md:z-auto pointer-events-none">
-            <div class="pointer-events-auto max-w-md mx-auto md:max-w-none flex gap-4">
+        <div class="fixed bottom-16 left-0 right-0 w-full p-4 z-40 md:static md:p-0 md:mb-8 md:z-auto">
+            <div class="max-w-md mx-auto md:max-w-none flex gap-4">
                 <button 
                     wire:click="addToCart" 
                     wire:loading.attr="disabled"
                     @if($variantStock <= 0) disabled @endif
-                    class="flex-1 bg-brand-black text-white font-black text-lg py-4 rounded-xl relative overflow-hidden transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl shadow-brand-accent/20"
-                    x-data="{ added: @entangle('added') }">
+                    class="flex-1 bg-black text-white font-black text-base md:text-lg py-4 px-6 rounded-xl relative overflow-hidden transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl disabled:hover:scale-100"
+                    x-data="{ isAdded: false }"
+                    @cart-item-added.window="isAdded = true; setTimeout(() => isAdded = false, 2000)">
                     
                     <!-- Loading State -->
-                    <div wire:loading wire:target="addToCart" class="absolute inset-0 flex items-center justify-center bg-brand-black z-10">
+                    <div wire:loading wire:target="addToCart" class="absolute inset-0 flex items-center justify-center bg-black">
                         <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                     </div>
 
-                    <div class="absolute inset-0 flex items-center justify-center gap-3 transition-all duration-300"
-                         :class="added ? 'translate-y-10 opacity-0' : 'translate-y-0 opacity-100'">
+                    <!-- Default State: ADD TO CART -->
+                    <div class="flex items-center justify-center gap-2 transition-opacity duration-300"
+                         x-show="!isAdded"
+                         wire:loading.remove>
                         <span>ADD TO CART</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 5c.07.277-.029.561-.225.761A1.125 1.125 0 0119.66 15H4.34a1.125 1.125 0 01-.894-1.732l1.263-5a1.125 1.125 0 011.092-.852H18.57c.47 0 .91.247 1.092.852z" />
                         </svg>
                     </div>
 
-                    <div class="absolute inset-0 flex items-center justify-center gap-2 text-brand-accent font-black transition-all duration-300"
-                         :class="added ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'">
-                        <span>SECURED</span>
+                    <!-- Success State: ADDED TO CART -->
+                    <div class="flex items-center justify-center gap-2 text-yellow-400 transition-opacity duration-300"
+                         x-show="isAdded"
+                         x-cloak
+                         wire:loading.remove>
+                        <span>ADDED TO CART!</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                         </svg>
@@ -184,14 +190,14 @@
                     wire:click="buyNow" 
                     wire:loading.attr="disabled"
                     @if($variantStock <= 0) disabled @endif
-                    class="flex-1 bg-brand-accent text-brand-black font-black text-lg py-4 rounded-xl relative overflow-hidden transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-brand-accent/30">
-                    <div wire:loading wire:target="buyNow" class="absolute inset-0 flex items-center justify-center bg-brand-accent z-10">
+                    class="flex-1 bg-yellow-400 text-black font-black text-base md:text-lg py-4 px-6 rounded-xl relative overflow-hidden transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg disabled:hover:scale-100">
+                    <div wire:loading wire:target="buyNow" class="absolute inset-0 flex items-center justify-center bg-yellow-400">
                         <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                     </div>
-                    <span>BUY NOW</span>
+                    <span wire:loading.remove>BUY NOW</span>
                 </button>
             </div>
         </div>
@@ -294,7 +300,7 @@
     @endif
 
     <!-- Reviews Section -->
-    <div class="px-6 pb-24 max-w-7xl mx-auto">
+    <div class="px-4 md:px-6 pb-12 max-w-7xl mx-auto">
         <livewire:review-form :productId="$product->id" />
     </div>
 </div>

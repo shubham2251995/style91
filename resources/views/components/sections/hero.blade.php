@@ -36,7 +36,7 @@
     @endif
 
     {{-- Content Container --}}
-    <div class="relative w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-16 md:py-24 z-10">
+    <div class="relative w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-20 z-10">
         <div class="max-w-2xl lg:max-w-3xl">
             {{-- Badge --}}
             @if($badgeText)

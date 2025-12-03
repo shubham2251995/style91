@@ -52,7 +52,8 @@ class AdminLogin extends Component
             
             Log::info('Admin login successful', ['user_id' => $user->id]);
 
-            return redirect()->intended(route('admin.dashboard'));
+            // Use Livewire redirect with navigate:false to ensure proper navigation
+            return $this->redirect(route('admin.dashboard'), navigate: false);
         }
 
         Log::warning('Admin login failed - invalid credentials', [

@@ -81,11 +81,14 @@
     <div x-show="searchOpen" 
          x-transition
          @click.away="searchOpen = false"
-         class="absolute top-full left-0 w-full bg-white border-b border-gray-200 py-4 px-4 shadow-lg">
+         class="absolute top-full left-0 right-0 w-full bg-white border-b border-gray-200 py-3 px-4 shadow-lg z-50">
         <div class="max-w-7xl mx-auto">
-            <input type="text" 
-                   placeholder="Search for products, brands, categories..."
-                   class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-black focus:ring-1 focus:ring-black transition-all">
+            <form action="{{ route('search') }}" method="GET">
+                <input type="search" 
+                       name="q"
+                       placeholder="Search products..."
+                       class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-900 placeholder-gray-500 focus:border-black focus:ring-1 focus:ring-black transition-all">
+            </form>
         </div>
     </div>
 
