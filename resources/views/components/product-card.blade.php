@@ -91,30 +91,32 @@
                 @endif
             @endif
             
-            {{-- Action Buttons --}}
-            <div class="absolute bottom-0 left-0 right-0 p-3 flex items-center justify-between gap-2 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-white/95 backdrop-blur-sm">
-                {{-- Quick View --}}
-                <button 
-                    @click.prevent="$dispatch('quick-view', { productId: {{ $product->id }} })"
-                    class="flex-1 bg-gray-100 hover:bg-gray-200 text-brand-black py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-colors flex items-center justify-center gap-1"
-                >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                    </svg>
-                    <span class="hidden sm:inline">View</span>
-                </button>
+            {{-- Action Buttons - Show on Hover --}}
+            <div class="absolute bottom-0 left-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/60 to-transparent">
+                <div class="flex items-center gap-2">
+                    {{-- Quick View --}}
+                    <button 
+                        @click.prevent="$dispatch('quick-view', { productId: {{ $product->id }} })"
+                        class="flex-1 bg-white hover:bg-gray-100 text-black py-2.5 rounded-lg text-xs font-bold uppercase tracking-wide transition-colors flex items-center justify-center gap-1.5 shadow-lg"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        <span class="hidden sm:inline">View</span>
+                    </button>
 
-                {{-- Add to Cart --}}
-                <button 
-                    wire:click.prevent="addToCart({{ $product->id }})"
-                    class="flex-[2] bg-brand-black hover:bg-brand-accent hover:text-brand-black text-white py-2 rounded-lg text-xs font-black uppercase tracking-wide transition-all flex items-center justify-center gap-1 shadow-lg"
-                >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                    </svg>
-                    <span>Add to Cart</span>
-                </button>
+                    {{-- Add to Cart --}}
+                    <button 
+                        @click.prevent="$dispatch('add-to-cart', { productId: {{ $product->id }} })"
+                        class="flex-[2] bg-black hover:bg-yellow-400 hover:text-black text-white py-2.5 rounded-lg text-xs font-black uppercase tracking-wide transition-all flex items-center justify-center gap-1.5 shadow-lg"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        </svg>
+                        <span>Add to Cart</span>
+                    </button>
+                </div>
             </div>
         </div>
     </a>

@@ -190,18 +190,20 @@ try {
 
 
     {{-- Vibrant Youth-Centric Header --}}
-    @include('components.header-vibrant')
+    @include('components.header')
 
     <!-- Main Content -->
-    <main class="pt-[104px] md:pt-[120px] pb-16 min-h-screen w-full md:max-w-7xl mx-auto px-4 md:px-6 lg:px-8 relative">
-        {{ $slot }}
+    <main class="pt-20 md:pt-24 pb-16 min-h-screen w-full bg-white relative">
+        <div class="w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+            {{ $slot }}
+        </div>
     </main>
 
-    <!-- Desktop Background (Subtle) -->
-    <div class="fixed inset-0 -z-10 bg-brand-gray hidden md:block"></div>
+    {{-- Global Add-to-Cart Handler --}}
+    @livewire('add-to-cart-handler')
 
     {{-- Vibrant Footer --}}
-    @include('components.footer-vibrant')
+    @include('components.footer')
 
     <!-- Bottom Navigation (Mobile Only) -->
     <nav class="md:hidden fixed bottom-0 left-0 w-full z-50 pb-safe glass-nav">
