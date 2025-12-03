@@ -1,7 +1,7 @@
-<x-layouts.app-vibrant>
-<div>
+<x-layouts.app>
+<div class="w-full">
     @foreach($sections as $section)
-            <div class="mb-12" wire:key="section-{{ $section->id }}">
+            <div wire:key="section-{{ $section->id }}">
                 @if($section->type === 'hero')
                     @include('components.sections.hero', ['section' => $section])
                 
@@ -44,4 +44,4 @@
             </div>
         @endforeach
     </div>
-</x-layouts.app-vibrant>
+</x-layouts.app>

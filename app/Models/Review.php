@@ -51,4 +51,24 @@ class Review extends Model
     {
         return $query->where('rating', $rating);
     }
+
+    /**
+     * Get average rating for a product
+     */
+    public static function getAverageRating($productId)
+    {
+        return static::where('product_id', $productId)
+            ->where('is_approved', true)
+            ->avg('rating') ?? 0;
+    }
+
+    /**
+     * Get review count for a product
+     */
+    public static function getReviewCount($productId)
+    {
+        return static::where('product_id', $productId)
+            ->where('is_approved', true)
+            ->count();
+    }
 }

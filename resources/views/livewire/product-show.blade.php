@@ -2,17 +2,17 @@
     {{-- Structured Data for SEO --}}
     <script type="application/ld+json">
     {
-        "@context": "https://schema.org/",
-        "@type": "Product",
+        "@@context": "https://schema.org/",
+        "@@type": "Product",
         "name": "{{ $product->name }}",
         "image": "{{ $product->image_url }}",
         "description": "{{ strip_tags($product->description) }}",
         "brand": {
-            "@type": "Brand",
+            "@@type": "Brand",
             "name": "{{ config('app.name') }}"
         },
         "offers": {
-            "@type": "Offer",
+            "@@type": "Offer",
             "price": "{{ $product->price }}",
             "priceCurrency": "USD",
             "availability": "{{ $product->stock_quantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}",

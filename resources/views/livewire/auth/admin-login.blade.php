@@ -10,6 +10,13 @@
         </div>
 
         <div class="bg-white/10 border border-white/20 rounded-2xl p-8 backdrop-blur-lg shadow-2xl">
+            <!-- Error Message Banner -->
+            @if($errorMessage)
+                <div class="mb-4 p-4 bg-red-500/20 border border-red-500 rounded-xl text-red-400 text-sm">
+                    {{ $errorMessage }}
+                </div>
+            @endif
+            
             <form wire:submit.prevent="login" class="space-y-6">
                 <!-- Email -->
                 <div>
@@ -54,9 +61,17 @@
                 <!-- Submit Button -->
                 <button 
                     type="submit" 
-                    class="w-full flex justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-xl text-black bg-brand-accent hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent transition-all uppercase tracking-widest shadow-lg"
+                    wire:loading.attr="disabled"
+                    class="w-full flex justify-center items-center gap-2 py-4 px-4 border border-transparent text-sm font-bold rounded-xl text-black bg-brand-accent hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent transition-all uppercase tracking-widest shadow-lg disabled:opacity-50"
                 >
-                    Sign In
+                    <span wire:loading.remove wire:target="login">Sign In</span>
+                    <span wire:loading wire:target="login" class="flex items-center gap-2">
+                        <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Signing In...
+                    </span>
                 </button>
             </form>
 

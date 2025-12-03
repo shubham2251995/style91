@@ -43,6 +43,7 @@ class Home extends Component
             $activeFlashSales = collect([]);
         }
 
+
         return view('livewire.home', [
             'sections' => $sections,
             'activeFlashSales' => $activeFlashSales,
